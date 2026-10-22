@@ -1,6 +1,6 @@
 // Mesin OSCE service worker: halaman diambil dari jaringan dulu (supaya update cepat), cadangan dari cache saat offline.
 // Suara Ami (audio/*.mp4): disimpan utuh sekali, lalu potongan (Range) dilayani dari cache supaya jalan offline.
-const CACHE = "osce-fkg-v6";
+const CACHE = "osce-fkg-v7";
 const AUDIO = "osce-fkg-audio-v2";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
