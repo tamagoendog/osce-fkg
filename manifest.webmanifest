@@ -1,0 +1,17 @@
+{
+  "name": "Mesin OSCE FKG USU",
+  "short_name": "OSCE FKG",
+  "description": "Belajar OSCE Blok 24: ART, PFS, PRR. Kartu nalar, latihan urutan, lisan, kasus, kuis.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFAF4",
+  "theme_color": "#FFC93C",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
