@@ -18,3 +18,6 @@ Buku Skills Lab Blok 24 FKG USU, rangkuman OSCE Konservasi Blok 24, dan catatan 
 
 ## Update materi
 Edit `index.html`, lalu naikkan versi `CACHE` di `sw.js` (misalnya `osce-fkg-v2`) supaya semua HP mengambil versi baru.
+
+## Kredit suara
+Style-Bert-VITS2 モデル: 小春音アミ、あみたろの声素材工房 (https://amitaro.net/)
