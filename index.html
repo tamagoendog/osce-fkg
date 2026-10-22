@@ -1057,14 +1057,23 @@ function amiClip(k,tok,cb){
   if(AMI_SRC!==src){AMI_SRC=src;AMI_EL.src=src;try{AMI_EL.load()}catch(e){}}
   go();
 }
+// kalimat tanpa klip: coba pecah di koma/titik dua, pakai potongan yang ada klipnya, sisanya suara HP
+function amiUnits(sents){const out=[];const pushT=t=>{const l=out[out.length-1];if(l&&l.t!=null)l.t+=" "+t;else out.push({t})};
+  sents.forEach(s=>{const k=skey(s);if(AMI_IDX.i[k]){out.push({k,s});return}
+    const seg=s.split(/(?<=[:;,])\s+/);if(seg.length<2){pushT(s);return}
+    let a=0;while(a<seg.length){let hit=-1;for(let b=seg.length;b>a;b--){if(AMI_IDX.i[skey(seg.slice(a,b).join(" "))]){hit=b;break}}
+      if(hit>0){const t=seg.slice(a,hit).join(" ");out.push({k:skey(t),s:t});a=hit}else{pushT(seg[a]);a++}}});
+  return out}
 function say(text,opt){
   opt=opt||{};
   if(!(amiOn()&&S.sound&&text))return ttsSay(text,opt);
   const sents=sentencesOf(text);if(!sents.length)return ttsSay(text,opt);
   const tok=++speakTok;try{if(TTS&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel()}catch(e){}amiStop();
   let i=0,fin=false;const done=()=>{if(fin)return;fin=true;if(tok===speakTok&&opt.onend)opt.onend()};
-  const next=()=>{if(tok!==speakTok)return;if(i>=sents.length){done();return}const s=sents[i++];
-    amiClip(skey(s),tok,ok=>{if(ok)next();else ttsSay(s,{keepTok:tok,onend:next,rate:opt.rate})})};
+  const units=amiUnits(sents);sents.length=0;
+  const next=()=>{if(tok!==speakTok)return;if(i>=units.length){done();return}const u=units[i++];
+    if(u.t!=null){ttsSay(u.t,{keepTok:tok,onend:next,rate:opt.rate});return}
+    amiClip(u.k,tok,ok=>{if(ok)next();else ttsSay(u.s,{keepTok:tok,onend:next,rate:opt.rate})})};
   next();
 }
 function hush(){speakTok++;amiStop();try{if(TTS)speechSynthesis.cancel()}catch(e){}}
@@ -1159,7 +1168,10 @@ function qwReact(q,st,ok,run){
   if(ok){const c=run.combo;st.img=c>=5?"kucing-lompat":pick(["kucing-kardus","kucing-duduk","kucing-karton"]);st.line=COMBO_LINE[c]||pick(PRAISE);if(c>S.best){S.best=c;save()}sparks();buzz(15)}
   else{st.img=run.wrongRun>=3?"telur-ditinggal":pick(["kucing-gelas","kucing-cair"]);st.line=run.wrongRun>=3?KABUR_LINE:pick(ROAST);buzz([40,40,80])}
 }
-function sayCheck(q,st){const wi=st.picked-1;return "Oke, ngecek. Kamu pilih "+q.o[st.picked]+". Kenapa salah: "+(q.w[wi]||"belum cocok dengan soalnya.")+" Yang bener: "+q.o[0]+". "+q.y}
+const SL=["A","Be","Ce","De"];const dotS=x=>{x=String(x||"").trim();return /[.!?…]$/.test(x)?x:x+"."};
+function optsSpeech(q,ord){return ord.map((o,i)=>SL[i]+". "+dotS(q.o[o])).join(" ")}
+function checkSpeech(q,picked){const wi=picked-1;return "Oke, ngecek. Kamu pilih. "+dotS(q.o[picked])+" Kenapa salah. "+dotS(q.w[wi]||"belum cocok dengan soalnya")+" Yang bener. "+dotS(q.o[0])+" "+q.y}
+function sayCheck(q,st){return checkSpeech(q,st.picked)}
 function parseChoice(text,q,st){
   const t=" "+String(text).toLowerCase().replace(/[.,!?]/g," ")+" ";const n=q.o.length;
   const map=[[/\b(a|ah|aa|ha|pilihan a|jawaban a|yang a)\b/,0],[/\b(b|be|bee|beh|pe)\b/,1],[/\b(c|ce|se|si|ceh|che)\b/,2],[/\b(d|de|deh|dee)\b/,3],[/\b(satu|pertama|nomor satu)\b/,0],[/\b(dua|kedua)\b/,1],[/\b(tiga|ketiga)\b/,2],[/\b(empat|keempat)\b/,3]];
@@ -1224,9 +1236,9 @@ function cardHTML(c,ci){
 }
 const moveLabel={why:"kenapa ada",how:"cara kerja",break:"di mana patah",ana:"analogi",keep:"pegang ini",guess:"tebak dulu"};
 function itemText(it){
-  if(it.t==="card"){const c=MODS[it.mi].cards[it.ci];return strip(c.t)+". "+(c.k==="ch"?c.s.map(strip).join(". "):strip(c.b))}
+  if(it.t==="card"){const c=MODS[it.mi].cards[it.ci];return stripTags(c.t)+". "+(c.k==="ch"?c.s.map(x=>dotS(stripTags(x))).join(" "):stripTags(c.b))}
   if(it.t==="done")return "Modul selesai. Harusnya isinya telur, tapi isinya ilmu. Sekarang tiga soal kilat: mana yang duluan.";
-  if(it.t==="q"){const L="ABCD";return it.q.q+". "+it.st.ord.map((o,i)=>L[i]+". "+it.q.o[o]).join(". ")}
+  if(it.t==="q"){return dotS(it.q.q)+" "+optsSpeech(it.q,it.st.ord)}
   return "";
 }
 function renderFeed(noAuto){
@@ -1266,7 +1278,7 @@ function answerFeed(it,o){
   if(it.mi!=null){const id=MODS[it.mi].id;if(S.learn[id]){S.learn[id].n++;if(ok)S.learn[id].ok++;save()}}
   renderFeed(true);
   if(F.hf){autoAfterAnswer(it)}
-  else if(S.sound){say(ok?it.st.line+". "+it.q.y:"Hahahaha. "+it.st.line)}
+  else if(S.sound){say(ok?dotS(it.st.line)+" Nalarnya. "+it.q.y:"Hahahaha. "+dotS(it.st.line))}
   setTimeout(()=>{const r=document.querySelector("#fd-inner .rx");if(r)r.scrollIntoView({behavior:reduce?"auto":"smooth",block:"nearest"})},60);
 }
 function feedMain(){
@@ -1296,13 +1308,13 @@ function timeUp(it,heard){
   recordAnswer(it.q,false);F.combo=0;
   it.st.picked=-1;it.st.skip=true;it.st.checked=true;it.st.line=(heard?"Aku dengar \""+heard+"\", tapi nggak nyambung ke pilihan mana pun.":"Hening. Kucingnya masih nunggu.")+" Gapapa, ini jawabannya.";
   renderFeed(true);
-  say((heard?"Aku nggak nangkep. ":"Waktunya habis. ")+"Jawabannya: "+it.q.o[0]+". "+it.q.y,{onend:()=>{F&&(F.timer=setTimeout(()=>{if(F&&F.hf&&cur()===it)feedForward()},900))}});
+  say((heard?"Aku nggak nangkep. ":"Waktunya habis. ")+"Jawabannya. "+dotS(it.q.o[0])+" "+it.q.y,{onend:()=>{F&&(F.timer=setTimeout(()=>{if(F&&F.hf&&cur()===it)feedForward()},900))}});
 }
 function autoAfterAnswer(it,replay){
-  if(it.st.skip){say("Jawabannya: "+it.q.o[0]+". "+it.q.y,{onend:()=>{if(F&&F.hf&&cur()===it)F.timer=setTimeout(()=>{if(F&&F.hf&&cur()===it)feedForward()},900)}});return}
+  if(it.st.skip){say("Jawabannya. "+dotS(it.q.o[0])+" "+it.q.y,{onend:()=>{if(F&&F.hf&&cur()===it)F.timer=setTimeout(()=>{if(F&&F.hf&&cur()===it)feedForward()},900)}});return}
   const ok=it.st.picked===0;
   if(!ok)it.st.checked=true;renderFeed(true);
-  const txt=ok?it.st.line+". Nalarnya: "+it.q.y:"Hahahaha. "+it.st.line+" "+sayCheck(it.q,it.st);
+  const txt=ok?dotS(it.st.line)+" Nalarnya. "+it.q.y:"Hahahaha. "+dotS(it.st.line)+" "+sayCheck(it.q,it.st);
   say(txt,{onend:()=>{if(F&&F.hf&&cur()===it)F.timer=setTimeout(()=>{if(F&&F.hf&&cur()===it)feedForward()},900)}});
 }
 $("#fd-next").onclick=feedMain;
@@ -1311,7 +1323,7 @@ $("#fd-x").onclick=closeFeed;
 $("#fd-hf").onclick=()=>{if(!F)return;F.hf=!F.hf;if(F.hf){autoPlay(cur())}else{stopAuto();hush()}renderFeed(true)};
 $("#fd-read").onclick=()=>{const it=cur();if(!it)return;if(speaking()){hush();renderFeed(true);return}
   if(!S.sound){S.sound=true;save();renderSnd()}
-  let t=itemText(it);if(it.t==="q"&&it.st.picked!=null)t=it.st.picked===0?it.st.line+". "+it.q.y:(it.st.checked?sayCheck(it.q,it.st):"Hahahaha. "+it.st.line);
+  let t=itemText(it);if(it.t==="q"&&it.st.picked!=null)t=it.st.picked===0?dotS(it.st.line)+" Nalarnya. "+it.q.y:(it.st.checked?sayCheck(it.q,it.st):"Hahahaha. "+dotS(it.st.line));
   say(t,{onend:()=>{if(F)renderFeed(true)}});setTimeout(()=>{if(F)renderFeed(true)},120)};
 (function swipe(){let x0=null,y0=null;const el=$("#fd-body");
   el.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
@@ -1329,13 +1341,14 @@ function renderHome(){
   let h=`<div class="home-hero">${catImg("telur-kucing-tidur","t1")}<div style="display:grid;gap:8px"><div class="bubble">${esc(line)}</div><div class="tagline">ketawa dulu, baru mikir.</div></div></div>
   <button class="btn xl block stack" id="go-main">${ic("play")} Main<small>${allDone?"review campur, tanpa ujung":"lanjut: "+esc(MODS[mi].t)+(S.pos.ci?" (kartu "+(S.pos.ci+1)+")":"")}</small></button>
   <button class="btn white block" id="go-hf">${ic("head")} Rebahan: dengerin aja</button>
+  <button class="btn white block" id="go-mat">📖 Baca materi lengkap (cek fakta + sumber)</button>
   <div class="statrow"><span class="stat">modul <b>${n}</b>/${MODS.length}</span><span class="stat">combo terbaik <b>${S.best||0}</b></span><span class="stat">antre diulang <b>${dueN}</b></span></div>
   <div class="sk alt" style="display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center">${catImg("kucing-ngecek","t2")}<div><b class="hand" style="font-size:22px">Ngobrol sama Tamago</b><p class="muted" style="font-size:15px">Kuis pakai suara, setor langkah, atau tanya bebas. Tamago ketawa kalau kamu salah, terus ngajak ngecek.</p><button class="btn sm mint" id="go-tama" style="margin-top:8px">${ic("mic")} Buka</button></div></div>
   <details class="mods"><summary>› Pilih modul sendiri</summary><div class="modlist">`+
   MODS.map((m,i)=>{const done=!!S.learn[m.id],nx=!allDone&&i===S.pos.mi;return `<button class="modbtn ${done?"done":nx?"next":""}" data-mi="${i}"><span class="n">${done?"✓":i+1}</span><span><b>${esc(m.t)}${m.inti?' <span class="tagc inti">inti</span>':""}</b><span>${esc(m.sub)} · ${m.min} mnt</span></span></button>`}).join("")+`</div></details>`;
   const P=$("#p-main");P.innerHTML=h;
   $("#go-main").onclick=()=>openFeed({});
-  $("#go-hf").onclick=()=>{if(!S.sound){S.sound=true;save();renderSnd()}openFeed({hf:true})};
+  $("#go-mat").onclick=()=>{showTab("materi");window.scrollTo({top:0})};$("#go-hf").onclick=()=>{if(!S.sound){S.sound=true;save();renderSnd()}openFeed({hf:true})};
   $("#go-tama").onclick=()=>showTab("tamago");
   P.querySelectorAll("[data-mi]").forEach(b=>b.onclick=()=>openFeed({mi:+b.dataset.mi}));
 }
@@ -1349,7 +1362,7 @@ function logMsg(who,html,acts){const d=document.createElement("div");d.className
   d.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>tamaAct(b.dataset.act));d.scrollIntoView({behavior:reduce?"auto":"smooth",block:"end"});return d}
 function tama(text,opt){
   opt=opt||{};face(opt.face||"kucing-duduk");const mc=opt.face&&opt.face!=="kucing-duduk"?`<img class="mc" src="${IMG[opt.face]}" alt="">`:"";const el=logMsg("t",mc+esc(text).replace(/\n/g,"<br>"),opt.acts);
-  status("ngomong…");say(text,{onend:()=>{status(A.lis?"dengerin…":"siap ngobrol");if(opt.after)opt.after();if($("#tama-loop").checked&&MIC_OK&&SRC&&!opt.noLoop)setTimeout(startMic,350)}});return el}
+  status("ngomong…");say(opt.speech||text,{onend:()=>{status(A.lis?"dengerin…":"siap ngobrol");if(opt.after)opt.after();if($("#tama-loop").checked&&MIC_OK&&SRC&&!opt.noLoop)setTimeout(startMic,350)}});return el}
 function setMode(m,silent){A.mode=m;document.querySelectorAll("#tama-modes .chip").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
   $("#tama-procs").hidden=m!=="setor";if(m==="setor")renderTamaProcs();
   if(silent)return;hush();
@@ -1364,16 +1377,17 @@ function quizPickForTama(){const last=A.lastKey;const w=Object.keys(S.wrong).fil
 function askQuiz(intro){
   A.q=quizPickForTama();A.st={};A.st.ord=shuffle(A.q.o.map((_,i)=>i));const L="ABCD";
   const txt=(intro?"Kuis suara! Jawab A, B, C, atau D. Salah aku ketawain, terus kita cek bareng.\n\n":"")+A.q.q+"\n"+A.st.ord.map((o,i)=>L[i]+". "+A.q.o[o]).join("\n");
-  tama(txt,{face:"kucing-duduk"});
+  const sp=(intro?"Kuis suara! Jawab A, Be, Ce, atau De. Salah aku ketawain, terus kita cek bareng. ":"")+dotS(A.q.q)+" "+optsSpeech(A.q,A.st.ord);
+  tama(txt,{face:"kucing-duduk",speech:sp});
 }
 function answerTamaQuiz(o,heard){
   const q=A.q,st=A.st;st.picked=o;const ok=o===0;
   if(ok){A.run.combo++;A.run.wrongRun=0}else{A.run.combo=0;A.run.wrongRun++}
   qwReact(q,st,ok,A.run);if(!ok)st.picked=o;recordAnswer(q,ok);
-  if(ok)tama(st.line+" Nalarnya: "+q.y,{face:st.img,acts:`<button class="btn sm" data-act="next">Soal berikutnya</button>`});
+  if(ok)tama(st.line+" Nalarnya: "+q.y,{speech:dotS(st.line)+" Nalarnya. "+q.y,face:st.img,acts:`<button class="btn sm" data-act="next">Soal berikutnya</button>`});
   else{
-    tama("HAHAHAHA. "+st.line,{face:st.img,noLoop:true,after:()=>{
-      if(AI){explainWithAI(q,o)}else{const wi=o-1;tama("Oke, ngecek. Kamu pilih "+q.o[o]+". Kenapa salah: "+(q.w[wi]||"belum cocok dengan soalnya.")+" Yang bener: "+q.o[0]+". "+q.y,{face:"kucing-ngecek",acts:`<button class="btn sm" data-act="next">Soal berikutnya</button>`})}
+    tama("HAHAHAHA. "+st.line,{speech:"Hahahaha. "+dotS(st.line),face:st.img,noLoop:true,after:()=>{
+      if(AI){explainWithAI(q,o)}else{const wi=o-1;tama("Oke, ngecek. Kamu pilih "+q.o[o]+". Kenapa salah: "+(q.w[wi]||"belum cocok dengan soalnya.")+" Yang bener: "+q.o[0]+". "+q.y,{speech:checkSpeech(q,o),face:"kucing-ngecek",acts:`<button class="btn sm" data-act="next">Soal berikutnya</button>`})}
     }});
   }
   A.q=null;
@@ -1423,7 +1437,7 @@ function handleInput(raw){
   if(A.mode==="kuis"){
     if(A.q){const o=parseChoice(text,A.q,A.st);if(o!=null){answerTamaQuiz(o,text);return}
       if(/\?|kenapa|apa itu|jelasin|gimana|bagaimana/.test(t)){askFree(text);return}
-      tama("Aku nggak nangkep pilihannya. Sebut A, B, C, atau D ya.",{face:"kucing-nunggu"});return}
+      tama("Aku nggak nangkep pilihannya. Sebut A, B, C, atau D ya.",{speech:"Aku nggak nangkep. Sebut A, Be, Ce, atau De ya.",face:"kucing-nunggu"});return}
     if(/^(lanjut|next|lagi|iya|ya|oke|ok|gas)\b/.test(t)){askQuiz(false);return}
     askFree(text);return}
   if(A.mode==="setor"){if(/^(lewat|skip|nggak tau|gak tau|tidak tahu)/.test(t)){gradeSetor("");return}gradeSetor(text);return}
@@ -1449,7 +1463,7 @@ let tamaStarted=false;
 function tamaEnter(){face("kucing-duduk");renderAIBadge();if(!SRC)$("#mic-note").textContent=MIC_WHY;
   if(!tamaStarted){tamaStarted=true;logMsg("t",esc("Halo, aku Tamago. Ketuk mic terus ngomong, atau ketik. Pilih mode di atas: kuis suara, setor langkah, atau tanya bebas. Mulai dari kuis ya.")+(S.sound?"":"<br><span class='note'>Suara lagi mati. Nyalakan dengan tombol speaker di pojok atas.</span>"));askQuizDeferred()}}
 function askQuizDeferred(){A.q=quizPickForTama();A.st={ord:shuffle(A.q.o.map((_,i)=>i))};const L="ABCD";logMsg("t",esc(A.q.q).replace(/\n/g,"<br>")+"<br>"+A.st.ord.map((o,i)=>L[i]+". "+esc(A.q.o[o])).join("<br>"),`<button class="btn sm white" data-act="readq">${ic("spk")} Bacakan</button>`);
-  const last=$("#tama-log").lastElementChild;last.querySelector("[data-act=readq]").onclick=()=>say(A.q?A.q.q+". "+A.st.ord.map((o,i)=>L[i]+". "+A.q.o[o]).join(". "):"")}
+  const last=$("#tama-log").lastElementChild;last.querySelector("[data-act=readq]").onclick=()=>say(A.q?dotS(A.q.q)+" "+optsSpeech(A.q,A.st.ord):"")}
 
 // ================= QUIZ BANK (Latihan → Kuis), same ketawa→ngecek widget =================
 const TOPICS=["Semua","ART","PFS","PRR","Diagnosis"];
