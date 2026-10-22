@@ -1,7 +1,7 @@
 // Mesin OSCE service worker: halaman diambil dari jaringan dulu (supaya update cepat), cadangan dari cache saat offline.
-// Suara Ami (audio/*.m4a): disimpan utuh sekali, lalu potongan (Range) dilayani dari cache supaya jalan offline.
+// Suara Ami (audio/*.mp4): disimpan utuh sekali, lalu potongan (Range) dilayani dari cache supaya jalan offline.
 const CACHE = "osce-fkg-v4";
-const AUDIO = "osce-fkg-audio-v1";
+const AUDIO = "osce-fkg-audio-v2";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== AUDIO).map(k => caches.delete(k))))); self.clients.claim(); });
@@ -27,7 +27,7 @@ async function audio(req) {
 }
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
-  if (/\/audio\/[^/]+\.m4a$/.test(new URL(e.request.url).pathname)) { e.respondWith(audio(e.request)); return; }
+  if (/\/audio\/[^/]+\.(m4a|mp4)$/.test(new URL(e.request.url).pathname)) { e.respondWith(audio(e.request)); return; }
   e.respondWith(
     fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; })
       .catch(() => caches.match(e.request).then(m => m || caches.match("./index.html")))
