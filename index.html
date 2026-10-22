@@ -306,6 +306,7 @@ details.mods summary::-webkit-details-marker{display:none}
 <section role="tabpanel" id="p-tamago" hidden>
   <div class="tama-top"><div class="sticker t1" id="tama-face"></div>
     <div><div class="name">Tamago</div><div class="muted" id="tama-status">siap ngobrol</div><span class="badge" id="ai-badge">mode lokal</span></div></div>
+  <div class="chips" id="tama-voice"><button class="chip" data-voice="neko" aria-pressed="true">Suara neko</button><button class="chip" data-voice="normal" aria-pressed="false">Suara normal</button><button class="chip" data-voicetest="1">Tes suara</button></div>
   <div class="chips" id="tama-modes">
     <button class="chip" data-mode="kuis" aria-pressed="true">Kuis suara</button>
     <button class="chip" data-mode="setor" aria-pressed="false">Setor langkah</button>
@@ -459,7 +460,7 @@ const PROCS={
   ["Cocoa butter / varnish","Aplikasikan cocoa butter/varnish ke seluruh permukaan restorasi dengan cotton pellet.","Di jam-jam awal GIC gampang kemasukan air dan juga gampang kering. Pelindung mencegah keduanya."]
  ]},
  pfsgic:{name:"PFS GIC",group:"Pedo",steps:[
-  ["Posisi, APD, oklusi, isolasi, diagnosis",OPEN+" Contoh: gigi 46, ICDAS D0, pit fisur dalam bebas karies.",OPENWHY],
+  ["Posisi, APD, oklusi, isolasi, diagnosis",OPEN+" Contoh: gigi 46, pit fisur dalam bebas karies (ICDAS 0 / sound).",OPENWHY],
   ["Pumice + brush, tanpa bur","Bersihkan seluruh permukaan dengan pumice dan air memakai bur sikat (brush) sampai bersih. Tanpa preparasi.","Plak dan pelikel di fisur menghalangi bahan. Fisur sehat tidak boleh dibur."],
   ["Cuci + keringkan","Cuci dengan air dan keringkan dengan semprotan udara.","Sisa pumice harus hilang sebelum kondisioner."],
   ["Dentin conditioner 10–20 dtk","Oleskan dentin conditioner dengan mikroaplikator, diamkan 10–20 detik (sesuai produk).","Asam poliakrilat membersihkan permukaan dan menyiapkannya untuk ikatan kimia GIC."],
@@ -482,7 +483,7 @@ const PROCS={
   ["Cek oklusi, buang kontak prematur","Cek oklusi dengan articulating paper. Hilangkan kontak prematur dengan bur composite polishing/enhance.","Kontak berlebih termasuk kesalahan fatal di lembar penilaian."]
  ]},
  prra:{name:"PRR A",group:"Pedo",steps:[
-  ["Posisi, APD, oklusi, isolasi, diagnosis K1",OPEN+" Contoh: gigi 36 karies enamel (K1) pada pit mesial oklusal, < 0,5 mm.",OPENWHY],
+  ["Posisi, APD, oklusi, isolasi, diagnosis",OPEN+" Contoh: gigi 36 karies enamel pada pit mesial oklusal, kedalaman < 0,5 mm (kunci remed: ICDAS D2, WHO D2, Site 1 Size 1).",OPENWHY],
   ["Buang karies, bur bulat ¼ atau ½","Buang jaringan karies dengan bur bulat diamond no. ¼ atau ½. Bila kavitas cukup lebar, tambah retensi dengan bevel.","Preparasi mengikuti lesi saja. Fisur sehat tidak dilebarkan."],
   ["Pumice + brush, cuci, keringkan","Bersihkan seluruh gigi dengan pumice dan bur brush, cuci, keringkan.","Fisur lain yang akan disilen juga harus bersih."],
   ["Etsa seluruh enamel 20–30 dtk","Etsa seluruh enamel, baik kavitas maupun pit/fisur lain yang dalam, 20–30 detik.","Kavitas tipe A hanya di enamel, jadi bisa dietsa dan disegel sekaligus."],
@@ -558,14 +559,15 @@ const MODS=[
  {k:"c",m:"keep",t:"Angka dan nama produk",b:`<ul><li>DMFT <b>≤ 4,4</b> → resin. DMFT <b>≥ 4,5</b> → <span class="hl">GIC</span>.</li><li><b>Fuji VII</b> (bubuk pink) = silen fisur, GIC tipe 4.</li><li><b>Fuji IX</b> = GIC restoratif (tipe 2), dipakai untuk ART (tipe 8 = ART).</li><li>Silen <b>unfilled</b> (Fissured Nova Plus, Bioseal): etsa saja, tanpa bonding.</li><li><b>Diafil Flow</b> (filled): etsa + bonding.</li><li>GIC diaduk pakai <b>agate spatula</b>, tidak boleh diencerkan.</li></ul>`},
  {k:"c",m:"ana",t:"Kalau lupa di ruang ujian",b:`<p>Tanya diri sendiri: <span class="hl">"Bahan ini nempel pakai apa?"</span></p><p><b>Kimia (GIC)</b>: permukaannya harus bersih dan lembab, lalu dilindungi.</p><p><b>Kunci (resin)</b>: permukaannya harus berpori dan kering, lalu disinar.</p>`}
 ]},
-{id:"m4",t:"Membaca karies",min:6,inti:true,sub:"ICDAS, K1–K4, Mount & Hume",cards:[
+{id:"m4",t:"Membaca karies",min:6,inti:true,sub:"permanen: ICDAS · sulung: K1–K4",cards:[
  {k:"c",m:"why",t:"Kedalaman lesi menentukan tipe tindakan",d:"depth",b:`<p>Bayangkan gedung: <b>enamel</b> lantai atas, <b>DEJ</b> lantai tengah, <b>dentin</b> lantai bawah, <b>pulpa</b> basement.</p><p>PRR <span class="hl">A</span> berhenti di setengah enamel, <span class="hl m">B</span> hampir DEJ, <span class="hl p">C</span> sudah masuk dentin.</p>`},
  {k:"c",m:"how",t:"ICDAS 0–6",b:`<ul><li><b>0</b> sehat, bahkan setelah dikeringkan 5 detik</li><li><b>1</b> putih/coklat baru terlihat <span class="hl">setelah dikeringkan</span></li><li><b>2</b> putih/coklat sudah terlihat <span class="hl">saat basah</span></li><li><b>3</b> enamel pecah, dentin <b>belum</b> terlihat</li><li><b>4</b> enamel tampak utuh tapi ada <span class="hl m">bayangan gelap</span> dentin di bawahnya</li><li><b>5</b> kavitas, dentin terlihat</li><li><b>6</b> kavitas luas, ½ permukaan atau lebih</li></ul>`},
  {k:"g",q:"Enamel tampak utuh, tapi di bawahnya ada bayangan abu-abu gelap. ICDAS berapa?",o:["4","3","2","5"],y:"Bayangan dari dentin dengan enamel yang tampak utuh = 4. Kalau enamelnya sudah pecah tapi dentin belum terlihat = 3."},
- {k:"c",m:"how",t:"Kode yang lain",b:`<p><b>WHO</b>: D1 lesi enamel permukaan utuh, D2 kavitas enamel, D3 kavitas dentin, D4 sampai pulpa.</p><p><b>K (gigi sulung)</b>: K1 enamel, K2 dentin, K3 pulpa (vital: masih sakit; nonvital: tidak sakit lagi), K4 radiks (tinggal akar).</p><p>K3 nonvital: <b>DAAA</b> = abses (+), fistel (−), beberapa hari. <b>DAAK</b> = abses (+), fistel (+), sudah lama.</p><p><b>Mount & Hume</b>: Site 1 = pit fisur. Size 0 tidak ada lesi, 1 kecil/enamel, 2 dentin sedang.</p>`},
- {k:"g",q:"Radiolusensi hampir mencapai DEJ, enamel belum tembus. Tindakannya?",o:["PRR B (K1, lebih dari ½ tebal enamel)","PRR A","PRR C","PFS"],y:"Belum melewati DEJ berarti masih enamel (K1). Tapi sudah lebih dari setengah tebal enamel, jadi tipe B. Kata kunci di soal: 'hampir mencapai DEJ'."},
+ {k:"c",m:"how",t:"Permanen pakai ICDAS, sulung pakai K",b:`<p><b>Gigi permanen</b> (16, 26, 36, 46, 17, 37, premolar): pakai <span class="hl">ICDAS</span>, ditambah WHO dan Mount &amp; Hume. <b>Jangan pakai K1–K4.</b></p><p><b>Gigi sulung</b> (51–85): pakai <span class="hl m">K1–K4</span>.</p><p><b>WHO</b>: D1 lesi enamel permukaan utuh, D2 kavitas enamel, D3 kavitas dentin, D4 sampai pulpa.</p><p><b>K (gigi sulung)</b>: K1 enamel, K2 dentin, K3 pulpa (vital: masih sakit; nonvital: tidak sakit lagi), K4 radiks (tinggal akar).</p><p>K3 nonvital: <b>DAAA</b> = abses (+), fistel (−), beberapa hari. <b>DAAK</b> = abses (+), fistel (+), sudah lama.</p><p><b>Mount & Hume</b>: Site 1 = pit fisur. Size 0 tidak ada lesi, 1 kecil/enamel, 2 dentin sedang.</p>`},
+ {k:"g",q:"Gigi 46: karies dentin di pit distal. Diagnosisnya ditulis pakai kode apa?",o:["ICDAS (plus WHO dan Mount & Hume), karena 46 gigi permanen","K2, karena sudah dentin","K1, karena masih kecil","DAAK"],y:"K1–K4 itu sistem diagnosis gigi sulung (51–85). 46 adalah molar pertama permanen, jadi pakai ICDAS, ditambah WHO D3 dan Mount & Hume Site 1 Size 2. Tulis deskriptif dulu: karies dentin pada pit distal."},
+ {k:"g",q:"Radiolusensi hampir mencapai DEJ, enamel belum tembus. Tindakannya?",o:["PRR B (karies enamel lebih dari ½ tebal)","PRR A","PRR C","PFS"],y:"Belum melewati DEJ berarti masih di enamel. Tapi sudah lebih dari setengah tebal enamel, jadi tipe B. Kata kunci di soal: 'hampir mencapai DEJ'."},
  {k:"g",q:"Gigi 75: ada fistula, sudah lama, perkusi (−), tidak sakit lagi. Diagnosisnya?",o:["K3 nonvital, DAAK","K2","K3 vital","DAAA"],y:"Fistel (+) dan sudah lama berarti kronis (DAAK). Tidak sakit lagi dan perkusi (−) berarti pulpa nonvital."},
- {k:"c",m:"break",t:"Jebakan kode",b:`<ul><li>Kunci jawaban dan ringkasan sering beda kode ICDAS untuk kasus yang sama. Karena itu <span class="hl">tulis diagnosis deskriptif dulu</span> ("karies enamel pada pit mesial, < 0,5 mm"), baru kodenya.</li><li>Perubahan warna saja tidak cukup jadi alasan untuk membur.</li><li>ICDAS tidak otomatis menentukan tipe PRR. Tipe ditentukan oleh kedalaman lesi yang sebenarnya.</li></ul>`},
+ {k:"c",m:"break",t:"Jebakan kode",b:`<ul><li>Kunci jawaban dan ringkasan sering beda kode ICDAS untuk kasus yang sama. Karena itu <span class="hl">tulis diagnosis deskriptif dulu</span> ("karies enamel pada pit mesial, < 0,5 mm"), baru kodenya.</li><li>Perubahan warna saja tidak cukup jadi alasan untuk membur.</li><li><b>Gigi permanen jangan diberi kode K1–K4.</b> K itu untuk gigi sulung. Kunci soal latihan lama sempat menulis K1 untuk gigi 16, jadi hati-hati.</li><li>ICDAS tidak otomatis menentukan tipe PRR. Tipe ditentukan oleh kedalaman lesi yang sebenarnya.</li></ul>`},
  {k:"c",m:"keep",t:"Posisi operator (jam)",b:`<ul><li>Regio 1 (kanan atas): operator 10.00, asisten 02.00</li><li>Regio 2 (kiri atas): 11.00, 02.30</li><li>Regio 3 (kiri bawah): 10.30, 02.30</li><li>Regio 4 (kanan bawah): <span class="hl">10.00</span>, 03.00</li></ul><p class="muted">Jam hanya panduan. Sesuaikan dengan tangan dominan dan kenyamanan.</p>`}
 ]},
 {id:"m5",t:"PFS pakai GIC",min:5,inti:true,sub:"langkah + alasan",proc:"pfsgic",cards:[
@@ -588,7 +590,8 @@ const MODS=[
  {k:"c",m:"how",t:"Makin dalam, makin butuh bahan yang kuat",d:"depth",b:`<p>Makin dalam lesinya → makin perlu bahan restoratif yang tahan kunyah (komposit) dan perekatnya (bonding).</p><p>Makin dekat ke pulpa → perlu anestesi, dan liner dipertimbangkan.</p>`},
  {k:"c",m:"keep",t:"Tabel A / B / C",b:`<div class="mini-tbl"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody>
  <tr><td>Dalam</td><td>&lt; ½ enamel (± &lt; 0,5 mm)</td><td>&gt; ½ enamel, hampir DEJ</td><td>Dentin</td></tr>
- <tr><td>Kode</td><td>K1</td><td>K1</td><td>K2</td></tr>
+ <tr><td>Diagnosis</td><td>Karies enamel</td><td>Karies enamel, hampir DEJ</td><td>Karies dentin</td></tr>
+ <tr><td>Mount &amp; Hume</td><td>Site 1 Size 1</td><td>Site 1 Size 1</td><td>Site 1 Size 2</td></tr>
  <tr><td>Bur</td><td>Bulat ¼ / ½</td><td>Bulat, ± 1–2 mm</td><td>≥ no. 2 / 330, bevel</td></tr>
  <tr><td>Anestesi</td><td>Tidak</td><td>Tidak</td><td>Ya</td></tr>
  <tr><td>Bahan</td><td>Etsa + silen</td><td>Etsa + bonding + komposit packable + silen</td><td>Seperti B, komposit per 2 mm</td></tr></tbody></table></div>`},
@@ -624,28 +627,28 @@ const MODS=[
 
 const CASES=[
  {id:"c1",title:"46 · dmft 7",src:"OSCE 2024",proc:"pfsgic",v:"Anak laki-laki 8 tahun, belum pernah ke dokter gigi dan agak rewel. Gigi 46 pit dan fisur dalam, sedikit kekuningan, sonde tidak tersangkut, tidak ada karies proksimal. Skor dmft 7.",
-  qs:[["Diagnosis","Diagnosis gigi 46?",["Pit dan fisur dalam, bebas karies (ICDAS D0 / sound)","Karies enamel K1","Karies dentin K2","Pulpitis reversibel"],"Sonde tidak tersangkut dan tidak ada kavitas, jadi gigi sehat dengan fisur rentan."],["Rencana","Rencana perawatan?",["Pit dan fisur silen (PFS)","PRR tipe A","PRR tipe B","ART"],"Tidak ada kavitas, jadi tidak ada preparasi."],["Bahan","Bahannya?",["Silen GIC (Fuji VII)","Silen resin unfilled","Komposit packable","GIC Fuji IX GP"],"dmft 7 ≥ 4,5 berarti risiko tinggi, dan anak kurang kooperatif. GIC melepas fluor dan lebih toleran saliva."]],
-  ans:{Diagnosis:"Gigi 46 pit dan fisur dalam, bebas karies (ICDAS D0)",Rencana:"PFS",Alasan:"Pit fisur dalam rentan karies, gigi sehat, tidak ada karies proksimal, risiko karies tinggi",Bahan:"Silen GIC Fuji VII",Alasan_bahan:"DMFT ≥ 4,5, fluor, toleran saliva, anak kurang kooperatif. Retensi lebih lemah, jadi kontrol ± 3 bulan",Posisi:"Regio 4, operator jam 10.00"}},
+  qs:[["Diagnosis","Diagnosis gigi 46?",["Pit dan fisur dalam, bebas karies (ICDAS 0 / sound)","Karies enamel (ICDAS 3)","Karies dentin (ICDAS 5)","Pulpitis reversibel"],"Sonde tidak tersangkut dan tidak ada kavitas, jadi gigi sehat dengan fisur rentan."],["Rencana","Rencana perawatan?",["Pit dan fisur silen (PFS)","PRR tipe A","PRR tipe B","ART"],"Tidak ada kavitas, jadi tidak ada preparasi."],["Bahan","Bahannya?",["Silen GIC (Fuji VII)","Silen resin unfilled","Komposit packable","GIC Fuji IX GP"],"dmft 7 ≥ 4,5 berarti risiko tinggi, dan anak kurang kooperatif. GIC melepas fluor dan lebih toleran saliva."]],
+  ans:{Diagnosis:"Gigi 46 pit dan fisur dalam, bebas karies (ICDAS 0 / sound)",Rencana:"PFS",Alasan:"Pit fisur dalam rentan karies, gigi sehat, tidak ada karies proksimal, risiko karies tinggi",Bahan:"Silen GIC Fuji VII",Alasan_bahan:"DMFT ≥ 4,5, fluor, toleran saliva, anak kurang kooperatif. Retensi lebih lemah, jadi kontrol ± 3 bulan",Posisi:"Regio 4, operator jam 10.00"}},
  {id:"c2",title:"36 · dmft 2",src:"OSCE 2025",proc:"pfsres",v:"Anak perempuan 8 tahun, kooperatif, rutin kontrol tiap 6 bulan. Gigi 36 pit dan fisur dalam, tidak ada karies. Skor dmft 2.",
-  qs:[["Diagnosis","Diagnosis gigi 36?",["Pit dan fisur dalam, bebas karies","Karies enamel K1","Karies dentin K2","Fisur dangkal self-cleansing"],"Tidak ada karies, fisurnya dalam dan retentif."],["Rencana","Rencana perawatan?",["PFS","PRR tipe A","Observasi tanpa tindakan","ART"],"Fisur dalam dan sehat pada gigi permanen muda."],["Bahan","Bahannya?",["Silen berbasis resin","Silen GIC Fuji VII","GIC Fuji IX","Komposit packable"],"dmft 2 ≤ 4,4 berarti risiko rendah. Anak kooperatif sehingga isolasi bisa dicapai. Retensi resin lebih kuat."]],
+  qs:[["Diagnosis","Diagnosis gigi 36?",["Pit dan fisur dalam, bebas karies","Karies enamel (ICDAS 3)","Karies dentin (ICDAS 5)","Fisur dangkal self-cleansing"],"Tidak ada karies, fisurnya dalam dan retentif."],["Rencana","Rencana perawatan?",["PFS","PRR tipe A","Observasi tanpa tindakan","ART"],"Fisur dalam dan sehat pada gigi permanen muda."],["Bahan","Bahannya?",["Silen berbasis resin","Silen GIC Fuji VII","GIC Fuji IX","Komposit packable"],"dmft 2 ≤ 4,4 berarti risiko rendah. Anak kooperatif sehingga isolasi bisa dicapai. Retensi resin lebih kuat."]],
   ans:{Diagnosis:"Gigi 36 pit dan fisur dalam, bebas karies",Rencana:"PFS",Bahan:"Silen resin",Alasan_bahan:"DMFT ≤ 4,4, kooperatif, kontrol berkala, retensi lebih kuat. Kekurangannya tidak melepas fluor"}},
  {id:"c3",title:"36 · pit mesial",src:"Remed 1",proc:"prra",v:"Gigi 36 karies di pit mesial bagian oklusal, kedalaman < 0,5 mm. Pit dan fisur lain sehat. Tidak ada karies proksimal.",
-  qs:[["Diagnosis","Diagnosis gigi 36?",["Karies enamel (K1) pada pit mesial oklusal","Pit fisur dalam bebas karies","Karies dentin K2","Karies kelas I luas"],"< 0,5 mm dan hanya enamel: K1."],["Rencana","Rencana perawatan?",["PRR tipe A","PFS saja","PRR tipe C","Restorasi kelas I konvensional"],"Satu titik karies enamel yang dangkal, fisur lain sehat."],["Bahan","Tahapan menurut kunci remed?",["Preparasi minimal → etsa → silen resin (tanpa bonding, tanpa RK)","Etsa → bonding → komposit packable → silen","Conditioner → GIC Fuji IX","Etsa → bonding → komposit incremental 2 mm"],"Kavitasnya dangkal, jadi silen sudah cukup."]],
-  ans:{Diagnosis:"Gigi 36 karies enamel (K1) pada pit mesial oklusal, < 0,5 mm",Rencana:"Preventif resin restorasi tipe A",Alasan:"Karies dini di pit, tidak melibatkan proksimal, tidak luas",Bahan:"Etsa + silen resin, bur bulat ¼ atau ½",Acuan:"Buku SL hal. 34–36"}},
+  qs:[["Diagnosis","Diagnosis gigi 36?",["Karies enamel pada pit mesial oklusal, kedalaman < 0,5 mm","Pit fisur dalam bebas karies","Karies dentin (ICDAS 5)","Karies kelas I luas"],"< 0,5 mm dan hanya di enamel. Kunci remed: ICDAS D2, WHO D2, Site 1 Size 1. 36 gigi permanen, jadi tidak pakai kode K."],["Rencana","Rencana perawatan?",["PRR tipe A","PFS saja","PRR tipe C","Restorasi kelas I konvensional"],"Satu titik karies enamel yang dangkal, fisur lain sehat."],["Bahan","Tahapan menurut kunci remed?",["Preparasi minimal → etsa → silen resin (tanpa bonding, tanpa RK)","Etsa → bonding → komposit packable → silen","Conditioner → GIC Fuji IX","Etsa → bonding → komposit incremental 2 mm"],"Kavitasnya dangkal, jadi silen sudah cukup."]],
+  ans:{Diagnosis:"Gigi 36 karies enamel pada pit mesial oklusal, < 0,5 mm (kunci remed: ICDAS D2, WHO D2, Site 1 Size 1)",Rencana:"Preventif resin restorasi tipe A",Alasan:"Karies dini di pit, tidak melibatkan proksimal, tidak luas",Bahan:"Etsa + silen resin, bur bulat ¼ atau ½",Acuan:"Buku SL hal. 34–36"}},
  {id:"c4",title:"16 · hampir DEJ",src:"Soal latihan",proc:"prrb",v:"Anak 8,5 tahun. Gigi 16 karies sentral di pit, diameter ± 2 mm. Rontgen: radiolusensi hampir mencapai DEJ. Fisur lain sehat, tidak ada karies proksimal.",
-  qs:[["Diagnosis","Diagnosis gigi 16?",["Karies enamel (K1), lebih dari ½ tebal enamel","Karies dentin K2","Pit fisur bebas karies","K3 vital"],"Belum melewati DEJ berarti masih enamel, tapi sudah dalam."],["Rencana","Rencana perawatan?",["PRR tipe B","PRR tipe A","PFS","ART"],"Kata kunci 'hampir mencapai DEJ' = tipe B."],["Bahan","Urutan bahan?",["Etsa → bonding (tepi + dasar) → komposit packable → silen resin","Etsa → silen resin saja","Conditioner → Fuji VII","Liner Ca(OH)₂ → GIC → silen"],"Kavitas 1–2 mm butuh komposit dengan bonding, lalu seluruh fisur disilen."]],
+  qs:[["Diagnosis","Diagnosis gigi 16?",["Karies enamel lebih dari ½ tebal, hampir DEJ","Karies dentin (ICDAS 5)","Pit fisur bebas karies","Pulpitis reversibel"],"Belum melewati DEJ berarti masih enamel, tapi sudah dalam. Kunci soal latihan lama menulis K1, padahal 16 gigi permanen: pakai deskripsi + ICDAS/WHO/Mount & Hume."],["Rencana","Rencana perawatan?",["PRR tipe B","PRR tipe A","PFS","ART"],"Kata kunci 'hampir mencapai DEJ' = tipe B."],["Bahan","Urutan bahan?",["Etsa → bonding (tepi + dasar) → komposit packable → silen resin","Etsa → silen resin saja","Conditioner → Fuji VII","Liner Ca(OH)₂ → GIC → silen"],"Kavitas 1–2 mm butuh komposit dengan bonding, lalu seluruh fisur disilen."]],
   ans:{Diagnosis:"Gigi 16 karies enamel > ½ tebal, hampir DEJ",Rencana:"PRR tipe B",Bahan:"Etsa, bonding, komposit packable, silen resin",Preparasi:"Bur bulat, ± 1–2 mm, bevel tepi"}},
  {id:"c5",title:"46 · dentin tipis",src:"Materi PRR C",proc:"prrc",v:"Remaja 12 tahun. Gigi 46 karies di pit distal, sudah mengenai dentin selapis tipis, tidak ada keluhan sakit. Fisur lain sehat. Gigi bisa diisolasi dengan baik.",
-  qs:[["Diagnosis","Diagnosis gigi 46?",["Karies dentin (K2)","Karies enamel K1","K3 vital","Pit fisur bebas karies"],"Sudah masuk dentin, belum ada keluhan pulpa."],["Rencana","Rencana perawatan?",["PRR tipe C","PRR tipe A","PFS","Perawatan pulpa"],"Lesi dentin terlokalisir, fisur lain sehat."],["Bahan","Pembeda tipe C dari B?",["Anestesi, bur ≥ no. 2/330, bevel, komposit per 2 mm","Tanpa etsa","Memakai Fuji VII","Wajib liner di semua kasus"],"Lesinya lebih dalam. Liner hanya dipasang kalau dentin sisa tipis."]],
-  ans:{Diagnosis:"Gigi 46 karies dentin (K2), Site 1 Size 2",Rencana:"PRR tipe C",Bahan:"Etsa, bonding, komposit per 2 mm, silen",Catatan:"Liner Ca(OH)₂ hanya bila diindikasikan"}},
+  qs:[["Diagnosis","Diagnosis gigi 46?",["Karies dentin pada pit distal (WHO D3, Site 1 Size 2)","Karies enamel, kurang dari ½ tebal","Pulpitis reversibel","Pit fisur bebas karies"],"Sudah masuk dentin, belum ada keluhan pulpa. 46 gigi permanen, jadi kodenya ICDAS/WHO/Mount & Hume, bukan K2."],["Rencana","Rencana perawatan?",["PRR tipe C","PRR tipe A","PFS","Perawatan pulpa"],"Lesi dentin terlokalisir, fisur lain sehat."],["Bahan","Pembeda tipe C dari B?",["Anestesi, bur ≥ no. 2/330, bevel, komposit per 2 mm","Tanpa etsa","Memakai Fuji VII","Wajib liner di semua kasus"],"Lesinya lebih dalam. Liner hanya dipasang kalau dentin sisa tipis."]],
+  ans:{Diagnosis:"Gigi 46 karies dentin pada pit distal (WHO D3, Site 1 Size 2; ICDAS 4 kalau baru bayangan, 5 kalau dentin sudah terlihat)",Rencana:"PRR tipe C",Bahan:"Etsa, bonding, komposit per 2 mm, silen",Catatan:"Liner Ca(OH)₂ hanya bila diindikasikan"}},
  {id:"c6",title:"75 · tanpa listrik",src:"Materi ART",proc:"art",v:"Anak 9 tahun diperiksa di posyandu daerah terpencil tanpa listrik dan dental unit. Gigi 75 karies oklusal satu permukaan, sudah mengenai dentin, belum pernah sakit, tidak ada abses atau fistula. Kavitas bisa dijangkau ekskavator.",
-  qs:[["Diagnosis","Diagnosis gigi 75?",["Karies dentin (K2), satu permukaan, pulpa belum terlibat","K3 nonvital","K4 radiks","Pit fisur bebas karies"],"Dentin, belum pernah sakit, tanpa abses."],["Rencana","Rencana perawatan?",["ART","PRR tipe C","Ekstraksi","PFS"],"Tanpa listrik, satu permukaan, terjangkau hand instrument, pulpa aman."],["Bahan","Bahan dan alasannya?",["GIC Fuji IX: fluor, nempel kimia, tidak mengiritasi pulpa/gingiva","Komposit: paling kuat","Amalgam: murah","Fuji VII: lebih encer"],"Ikatan kimia berarti kavitas tidak perlu dibentuk dengan bur."]],
+  qs:[["Diagnosis","Diagnosis gigi 75?",["Karies dentin (K2), satu permukaan, pulpa belum terlibat","K3 nonvital","K4 radiks","Pit fisur bebas karies"],"75 gigi sulung, jadi kode K dipakai di sini. Dentin, belum pernah sakit, tanpa abses: K2."],["Rencana","Rencana perawatan?",["ART","PRR tipe C","Ekstraksi","PFS"],"Tanpa listrik, satu permukaan, terjangkau hand instrument, pulpa aman."],["Bahan","Bahan dan alasannya?",["GIC Fuji IX: fluor, nempel kimia, tidak mengiritasi pulpa/gingiva","Komposit: paling kuat","Amalgam: murah","Fuji VII: lebih encer"],"Ikatan kimia berarti kavitas tidak perlu dibentuk dengan bur."]],
   ans:{Diagnosis:"Gigi 75 karies dentin (K2) satu permukaan",Rencana:"ART",Bahan:"GIC Fuji IX, 1:1, aduk 30 detik dengan agate spatula",Alasan:"Tanpa listrik, hand instrument, minim sakit, fluor"}},
  {id:"c7",title:"75 · fistula",src:"Kontraindikasi ART",proc:"art",v:"Anak 7 tahun. Gigi 75 karies besar mencapai pulpa, ada fistula di gingiva bukal. Perkusi (−), sudah tidak sakit, dulu pernah sakit lama.",
   qs:[["Diagnosis","Diagnosis gigi 75?",["K3 nonvital, DAAK","K2 karies dentin","K3 vital, pulpitis reversibel","DAAA"],"Fistel (+) dan sudah lama = kronis. Tidak sakit lagi = nonvital."],["Rencana","Boleh ART?",["Tidak: ada fistula, karies kena pulpa, pernah sakit lama","Ya, ART pakai Fuji IX","Ya, dikombinasi PFS","Ya, asal pakai indikator"],"Ada tiga kontraindikasi sekaligus. ART tidak merawat pulpa."],["Bahan","Kontraindikasi yang TIDAK ada di kasus ini?",["Kavitas tidak terjangkau hand instrument","Abses/fistula","Karies mengenai pulpa","Pernah sakit lama"],"Lima kontraindikasi: abses/fistula, kena pulpa, pulpitis kronis, sakit lama, tidak terjangkau."]],
   ans:{Diagnosis:"Gigi 75 K3 nonvital (DAAK)",Rencana:"Bukan ART. Perawatan pulpa/ekstraksi sesuai pemeriksaan"}},
  {id:"c8",title:"37 · erupsi sebagian",src:"Materi PFS",proc:"pfsgic",v:"Anak 12 tahun. Gigi 37 baru erupsi sebagian, operkulum masih menutupi bagian distal. Pit fisur dalam, tidak ada karies. Risiko karies tinggi.",
-  qs:[["Diagnosis","Diagnosis gigi 37?",["Pit fisur dalam bebas karies, gigi erupsi sebagian","Karies enamel K1","Perikoronitis","Karies dentin"],"Tidak ada karies. Status erupsi dicatat karena memengaruhi pilihan bahan."],["Rencana","Rencana perawatan?",["PFS","PRR A","Tunggu erupsi penuh tanpa tindakan","ART"],"Gigi yang baru erupsi justru paling rentan."],["Bahan","Bahannya?",["Silen GIC, karena resin kontraindikasi pada gigi erupsi sebagian","Silen resin unfilled","Flowable + bonding","Silen resin filled"],"Resin butuh permukaan kering, sedangkan gigi ini sulit diisolasi. Risiko tinggi juga mengarah ke GIC."]],
+  qs:[["Diagnosis","Diagnosis gigi 37?",["Pit fisur dalam bebas karies, gigi erupsi sebagian","Karies enamel (ICDAS 3)","Perikoronitis","Karies dentin"],"Tidak ada karies. Status erupsi dicatat karena memengaruhi pilihan bahan."],["Rencana","Rencana perawatan?",["PFS","PRR A","Tunggu erupsi penuh tanpa tindakan","ART"],"Gigi yang baru erupsi justru paling rentan."],["Bahan","Bahannya?",["Silen GIC, karena resin kontraindikasi pada gigi erupsi sebagian","Silen resin unfilled","Flowable + bonding","Silen resin filled"],"Resin butuh permukaan kering, sedangkan gigi ini sulit diisolasi. Risiko tinggi juga mengarah ke GIC."]],
   ans:{Diagnosis:"Gigi 37 pit fisur dalam bebas karies, erupsi sebagian",Rencana:"PFS",Bahan:"Silen GIC",Alasan_bahan:"Isolasi untuk resin tidak memadai, risiko tinggi, fluor"}}
 ];
 const QUIZ=[
@@ -691,7 +694,7 @@ const QUIZ=[
  ["p20","PFS","Aplikasi silen dimulai dari…",["Bagian tertinggi","Bagian terendah","Distal saja","Mana saja"],"Supaya udara tidak terjebak."],
  ["r1","PRR","Karies pit < 0,5 mm, hanya enamel?",["PRR A","PRR B","PRR C","PFS"],"Kurang dari ½ tebal enamel."],
  ["r2","PRR","Kata kunci 'hampir mencapai DEJ'?",["PRR B","PRR A","PRR C","ART"],"Lebih dari ½ tebal enamel."],
- ["r3","PRR","Karies selapis dentin?",["PRR C","PRR A","PFS","PRR B"],"K2."],
+ ["r3","PRR","Karies selapis dentin?",["PRR C","PRR A","PFS","PRR B"],"Sudah di dentin, jadi tipe C."],
  ["r4","PRR","Bur PRR A?",["Bulat ¼ atau ½","Fissure 330","Round no. 4","Tanpa bur"],"Preparasi kecil, kecepatan lambat."],
  ["r5","PRR","Yang ada di C, tidak ada di A?",["Anestesi, bevel, komposit per 2 mm","Etsa","Silen","Cek oklusi"],"Lesinya lebih dalam."],
  ["r6","PRR","PRR A menurut kunci remed?",["Etsa + silen resin, tanpa bonding dan tanpa RK","Etsa + bonding + komposit","GIC Fuji IX","Liner + komposit"],"Tabel buku pakai bonding. Tanyakan dosen."],
@@ -707,13 +710,16 @@ const QUIZ=[
  ["d3","Diagnosis","ICDAS 1 vs 2?",["1 terlihat setelah dikeringkan, 2 terlihat saat basah","1 kavitas, 2 bayangan","1 dentin, 2 enamel","Sama"],"Keduanya lesi awal."],
  ["d4","Diagnosis","WHO D3?",["Kavitas dentin","Lesi enamel utuh","Kavitas enamel","Sampai pulpa"],"D1–D4 makin dalam."],
  ["d5","Diagnosis","Mount & Hume pit fisur, karies dentin sedang?",["Site 1 Size 2","Site 2 Size 1","Site 1 Size 0","Site 3 Size 2"],"Site 1 = pit fisur."],
- ["d6","Diagnosis","K3 nonvital, abses + fistel, lama?",["DAAK","DAAA","Pulpitis reversibel","K2"],"DAAA: fistel (−), beberapa hari."],
- ["d7","Diagnosis","Gigi 55 tinggal akar?",["K4","K3","K2","K1"],"K4 = radiks."],
+ ["d6","Diagnosis","Gigi sulung K3 nonvital, abses + fistel, sudah lama?",["DAAK","DAAA","Pulpitis reversibel","K2"],"DAAA: fistel (−), beberapa hari."],
+ ["d7","Diagnosis","Gigi 55 tinggal akar?",["K4","K3","K2","K1"],"K4 = radiks. 55 gigi sulung, jadi kode K berlaku."],
+ ["d11","Diagnosis","Klasifikasi K1–K4 dipakai untuk…",["Gigi sulung","Gigi permanen","Semua gigi","Hanya gigi anterior"],"K1 enamel, K2 dentin, K3 pulpa, K4 radiks adalah sistem diagnosis gigi sulung. Gigi permanen didiagnosis dengan ICDAS, WHO, dan Mount & Hume."],
+ ["d12","Diagnosis","Gigi 36 karies enamel di pit mesial. Kode yang tepat?",["ICDAS, ditambah WHO dan Mount & Hume","K1","K2","DAAK"],"36 molar pertama permanen. Kunci remed menulisnya ICDAS D2, WHO D2, Site 1 Size 1."],
  ["d8","Diagnosis","Gigi 46, operator jam berapa?",["10.00","11.00","12.00","08.00"],"Regio 4: operator 10.00, asisten 03.00."],
  ["d9","Diagnosis","CRA dipakai untuk…",["Kebutuhan pencegahan dan interval kontrol","Mengganti diagnosis","Menentukan tipe PRR","Menentukan nomor bur"],"Keputusan tindakan tetap dari pemeriksaan per permukaan."],
  ["d10","Diagnosis","Skor 1 di lembar OSCE?",["Belum memadai","Benar","Tidak dilakukan","Tidak berlaku"],"2 benar, 1 belum memadai, 0 salah/tidak dilakukan."]
 ];
 const TRAPS=[
+ ["Gigi 46 (permanen) didiagnosis K1 atau K2?",0,"Tidak. K1–K4 untuk gigi sulung. Gigi permanen pakai ICDAS, ditambah WHO dan Mount & Hume. Kunci soal latihan lama sempat menulis K1 untuk gigi 16. Kalau ragu, tulis diagnosis deskriptif dulu, lalu kode ICDAS."],
  ["PFS: fisur sehat dibur dulu supaya silen lebih masuk?",0,"Tidak. Cukup pumice + brush. Preparasi berlebihan termasuk kesalahan fatal."],
  ["GIC: setelah conditioner, keringkan sampai benar-benar kering?",0,"Tidak, cukup lembab. GIC butuh air untuk bereaksi."],
  ["GIC: varnish boleh ditunda sampai selesai cek oklusi?",0,"Tidak. Oles segera, lalu ulang setelah oklusi disesuaikan."],
@@ -744,6 +750,7 @@ const W_MOD={
      ["Saliva tidak menetralkan resin. Yang terjadi, pori tertutup protein.","Saliva tidak mengeraskan enamel dalam hitungan detik. Porinya yang tertutup.","Tanpa pori, resin tidak bisa mengunci. Lanjut terus = silen lepas, dan itu kesalahan fatal."],
      ["Retensi kuat tidak ada gunanya kalau giginya tidak bisa kering. Plus resin tanpa fluor.","Komposit packable itu bahan isi kavitas, bukan silen fisur.","Risiko tinggi justru yang paling butuh silen."]],
  m4:[["3 = enamel sudah pecah. Di sini enamelnya masih tampak utuh.","2 = cuma perubahan warna enamel, tanpa bayangan dari dentin.","5 = dentin sudah terlihat langsung. Di sini baru bayangannya."],
+     ["K1–K4 itu untuk gigi sulung. 46 gigi permanen.","K juga untuk gigi sulung, dan ukuran lesi tidak mengubah sistem kodenya.","DAAK itu diagnosis abses kronis gigi sulung, bukan kode karies."],
      ["A hanya untuk karies kurang dari setengah tebal enamel. Hampir DEJ sudah lebih dalam.","C kalau sudah masuk dentin. Hampir DEJ berarti belum lewat.","Sudah ada lesi yang harus dibuang, jadi bukan PFS."],
      ["K2 masih di dentin. Fistula berarti infeksi sudah sampai pulpa dan keluar.","Vital berarti masih sakit atau masih responsif. Di sini sudah tidak sakit, perkusi negatif.","DAAA itu akut: fistel negatif, beberapa hari. Ini fistel positif dan sudah lama."]],
  m5:[["Fisurnya sehat. Ngebur di PFS = preparasi berlebihan, kesalahan fatal.","Etsa itu jalur resin. Ini PFS pakai GIC.","Conditioner tidak bisa bekerja di atas plak dan pelikel. Bersihkan dulu."],
@@ -822,6 +829,8 @@ const W_Q={
  d7:["K3 = pulpa.","K2 = dentin.","K1 = enamel."],
  d8:["11.00 itu regio 2.","12.00 bukan posisi di tabel.","08.00 tidak ada di tabel."],
  d9:["CRA tidak menggantikan diagnosis.","Tipe PRR dari kedalaman lesi.","Nomor bur dari ukuran lesi."],
+ d11:["Gigi permanen didiagnosis dengan ICDAS, WHO, dan Mount & Hume.","Tidak semua gigi. Hanya gigi sulung.","Tidak terkait anterior atau posterior."],
+ d12:["K1 untuk gigi sulung. 36 gigi permanen.","K2 juga untuk gigi sulung, dan ini masih enamel.","DAAK itu abses kronis, bukan kode karies."],
  d10:["2 = benar.","0 = tidak dilakukan atau salah.","TB = tidak berlaku."]
 };
 // Ketawa dulu…
@@ -899,32 +908,85 @@ function sparks(){
 function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
 
 // ================= VOICE OUT (TTS) =================
+// Dua gaya: "neko" = suara cewek Jepang bawaan HP membaca teks yang diubah ke katakana (logat Jepang), "normal" = suara Indonesia.
 const TTS="speechSynthesis" in window;
-let VOICE=null,speakTok=0;
-function pickVoice(){if(!TTS)return;try{const vs=speechSynthesis.getVoices()||[];VOICE=vs.find(v=>/^id([-_]|$)/i.test(v.lang))||vs.find(v=>/indones/i.test(v.name))||null}catch(e){}}
+let VOICE=null,VOICE_JA=null,VOICES_KNOWN=false,speakTok=0;
+if(!S.voice)S.voice="neko";
+function pickVoice(){if(!TTS)return;try{const vs=speechSynthesis.getVoices()||[];VOICES_KNOWN=vs.length>0;
+  VOICE=vs.find(v=>/^id([-_]|$)/i.test(v.lang))||vs.find(v=>/indones/i.test(v.name))||null;
+  const ja=vs.filter(v=>/^ja/i.test(v.lang));VOICE_JA=ja.find(v=>/kyoko|o-?ren|nanami|haruka|ayumi|sayaka|mizuki|female|女性|女/i.test(v.name))||ja[0]||null}catch(e){}}
 if(TTS){pickVoice();try{speechSynthesis.addEventListener("voiceschanged",pickVoice)}catch(e){}}
+// iOS: suara baru boleh keluar setelah "dibuka" oleh sentuhan pertama, dan mode senyap ikut membisukan halaman.
+let AUD_OK=false;
+function unlockAudio(){if(AUD_OK||!TTS)return;AUD_OK=true;
+  try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
+  try{speechSynthesis.cancel();speechSynthesis.resume();const u=new SpeechSynthesisUtterance("");u.volume=0;speechSynthesis.speak(u)}catch(e){}
+  pickVoice()}
+["touchend","pointerup","click","keydown"].forEach(ev=>document.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
+document.addEventListener("visibilitychange",()=>{if(document.hidden)hush()});
 function speakable(t){
   return strip(String(t)).replace(/→/g,", lalu ").replace(/≥/g," minimal ").replace(/≤/g," maksimal ").replace(/±/g,"kira-kira ").replace(/½/g,"setengah").replace(/¼/g,"seperempat")
-   .replace(/Ca\(OH\)₂/g,"kalsium hidroksida").replace(/(\d+)\s*–\s*(\d+)/g,"$1 sampai $2").replace(/\bdtk\b/g,"detik").replace(/\bLC\b/g,"light cure").replace(/\bmm\b/g,"milimeter")
-   .replace(/\bPFS\b/g,"P F S").replace(/\bPRR\b/g,"P R R").replace(/\bART\b/g,"A R T").replace(/\bGIC\b/g,"G I C").replace(/\bDEJ\b/g,"D E J").replace(/\bDMFT\b/gi,"D M F T").replace(/\bCRA\b/g,"C R A")
-   .replace(/[✓×›‹*_#]/g," ").replace(/\s+/g," ").trim();
+   .replace(/Ca\(OH\)₂/g,"kalsium hidroksida").replace(/(\d+)\s*–\s*(\d+)/g,"$1 sampai $2").replace(/\bdtk\b/g,"detik").replace(/\bLC\b/g,"light cure").replace(/\bmm\b/g,"milimeter").replace(/%/g," persen")
+   .replace(/\bPFS\b/g,"P F S").replace(/\bPRR\b/g,"P R R").replace(/\bART\b/g,"A R T").replace(/\bGIC\b/g,"G I C").replace(/\bDEJ\b/g,"D E J").replace(/\bDMFT\b/gi,"D M F T").replace(/\bCRA\b/g,"C R A").replace(/\bICDAS\b/g,"ikdas").replace(/\bTB\b/g,"T B")
+   .replace(/[✓×›‹*_#«»"“”]/g," ").replace(/\s+/g," ").trim();
 }
-function chunks(t){const out=[];let cur="";t.split(/(?<=[.!?…:;])\s+/).forEach(p=>{if((cur+" "+p).length>170&&cur){out.push(cur);cur=p}else cur=cur?cur+" "+p:p});if(cur)out.push(cur);
-  return out.flatMap(c=>c.length>220?c.match(/.{1,200}(\s|$)/g):[c])}
+// --- Indonesia → katakana (logat Jepang)
+const SATUAN=["nol","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas"];
+function terbilang(n){n=Math.floor(n);if(n<12)return SATUAN[n];if(n<20)return SATUAN[n-10]+" belas";if(n<100)return SATUAN[Math.floor(n/10)]+" puluh"+(n%10?" "+SATUAN[n%10]:"");
+  if(n<200)return "seratus"+(n%100?" "+terbilang(n%100):"");if(n<1000)return SATUAN[Math.floor(n/100)]+" ratus"+(n%100?" "+terbilang(n%100):"");
+  if(n<2000)return "seribu"+(n%1000?" "+terbilang(n%1000):"");if(n<10000)return SATUAN[Math.floor(n/1000)]+" ribu"+(n%1000?" "+terbilang(n%1000):"");return String(n)}
+const HURUF={A:"a",B:"be",C:"ce",D:"de",E:"e",F:"ef",G:"ge",H:"ha",I:"i",J:"je",K:"ka",L:"el",M:"em",N:"en",O:"o",P:"pe",Q:"ki",R:"er",S:"es",T:"te",U:"u",V:"fe",W:"we",X:"eks",Y:"ye",Z:"zet"};
+const LOAN=[["light cure","lait kyur"],["cotton pellet","koton pelet"],["cotton roll","koton rol"],["conditioner","kondisyoner"],["caries","karies"],["indicator","indikator"],["sealant","silen"],["fissure","fisur"],["flowable","flowabel"],["packable","pekabel"],["unfilled","anfild"],["filled","fild"],["smear layer","smir leyer"],["handscoon","henskun"],["haircap","herkep"],["nurse cap","nurs kep"],["applicator","aplikator"],["celluloid","seluloid"],["glass slab","glas slab"],["paper pad","peper ped"],["rubber dam","raber dem"],["enhance","enhens"],["burnisher","burnisyer"],["frosty","frosti"],["brush","bras"],["pumice","pumis"],["varnish","varnis"],["cocoa butter","koko bater"],["liner","lainer"],["self cleansing","self klinsing"],["ball","bol"],["stone","ston"],["articulating paper","artikuleting peper"],["explorer","eksplorer"],["agate","aget"],["scoop","skup"],["liquid","likuid"],["bonding","bonding"],["incremental","inkremental"],["shade","syed"],["sound","saun"],["fuji","fuji"],["tag","teg"],["cleanser","klinser"],["cavity","keviti"],["bevel","bevel"],["mount","maun"],["hume","hyum"],["site","sait"],["size","saiz"],["ikdas","ikdas"],["oke","oke"],["combo","kombo"],["skip","skip"],["scroll","skrol"]];
+const KV={"":"アイウエオ",k:"カキクケコ",g:"ガギグゲゴ",s:"サシスセソ",z:"ザジズゼゾ",n:"ナニヌネノ",h:"ハヒフヘホ",m:"マミムメモ",r:"ラリルレロ",l:"ラリルレロ",b:"バビブベボ",p:"パピプペポ",q:"カキクケコ",x:"サシスセソ"};
+const KV2={t:["タ","ティ","トゥ","テ","ト"],d:["ダ","ディ","ドゥ","デ","ド"],y:["ヤ","イ","ユ","イェ","ヨ"],w:["ワ","ウィ","ウ","ウェ","ウォ"],c:["チャ","チ","チュ","チェ","チョ"],j:["ジャ","ジ","ジュ","ジェ","ジョ"],f:["ファ","フィ","フ","フェ","フォ"],v:["ヴァ","ヴィ","ヴ","ヴェ","ヴォ"],ny:["ニャ","ニ","ニュ","ニェ","ニョ"],ng:["ンガ","ンギ","ング","ンゲ","ンゴ"],sy:["シャ","シ","シュ","シェ","ショ"],kh:["ハ","ヒ","フ","ヘ","ホ"]};
+const VI={a:0,i:1,u:2,e:3,o:4};
+const CODA_END={k:"ッ",t:"ト",p:"プ",s:"ス",h:"ー",r:"ル",l:"ル",b:"ブ",d:"ド",g:"グ",f:"フ",m:"ン",n:"ン",c:"チ",j:"ジ",z:"ズ",v:"フ",w:"ウ",y:"イ",x:"クス",q:"ク"};
+const CODA_MID={k:"ク",t:"ト",p:"プ",s:"ス",h:"",r:"ル",l:"ル",b:"ブ",d:"ド",g:"グ",f:"フ",m:"ン",n:"ン",c:"チ",j:"ジ",z:"ズ",v:"フ",w:"ウ",y:"イ",x:"クス",q:"ク"};
+function kana(w){let o="",i=0;const L=w.length;
+  while(i<L){const ch=w[i];
+    if(VI[ch]!=null){o+=KV[""][VI[ch]];i++;continue}
+    const dg=w.substr(i,2);
+    if(KV2[dg]&&VI[w[i+2]]!=null){o+=KV2[dg][VI[w[i+2]]];i+=3;continue}
+    if(dg==="ng"){o+="ン";i+=2;continue}
+    if(VI[w[i+1]]!=null){const v=VI[w[i+1]];o+=KV2[ch]?KV2[ch][v]:KV[ch]?KV[ch][v]:"";i+=2;continue}
+    o+=(i===L-1?CODA_END:CODA_MID)[ch]||"";i++}
+  return o}
+function toNeko(t){
+  t=t.replace(/\b([A-Z]{2,5})\b/g,m=>m.split("").join(" ")).replace(/\b([A-Z])(\d)/g,"$1 $2");
+  t=t.replace(/(\d+),(\d+)/g,(m,a,b)=>terbilang(+a)+" koma "+b.split("").map(d=>terbilang(+d)).join(" "));
+  t=t.replace(/\d+/g,m=>terbilang(+m));
+  t=t.replace(/\b[A-Z]\b/g,m=>HURUF[m]||m);
+  t=t.toLowerCase().replace(/[-–—/]/g," ");
+  LOAN.forEach(([a,b])=>{t=t.replace(new RegExp("\\b"+a+"\\b","g"),b)});
+  t=t.replace(/\b(ha){2,}h?\b/g,"nyahahaha").replace(/\bwk(wk)+\b/g,"nyahaha");
+  t=t.replace(/[?]/g," ？ ").replace(/!/g," ！ ").replace(/[.…]+/g," 。 ").replace(/[,;:()]/g," 、 ");
+  return t.split(/\s+/).filter(Boolean).map(w=>/^[。、！？]$/.test(w)?w:kana(w.replace(/[^a-z]/g,""))).join(" ").replace(/\s*([。、！？])\s*/g,"$1").replace(/、+/g,"、").trim();
+}
+function chunks(t){const out=[];let cur="";t.split(/(?<=[.!?…:;。！？])\s*/).forEach(p=>{if(!p)return;if((cur+" "+p).length>170&&cur){out.push(cur);cur=p}else cur=cur?cur+" "+p:p});if(cur)out.push(cur);
+  return out.flatMap(c=>c.length>220?(c.match(/.{1,200}(\s|、|$)/g)||[c]):[c])}
+function nekoReady(){return S.voice==="neko"&&(!!VOICE_JA||!VOICES_KNOWN)}
 function say(text,opt){
-  opt=opt||{};const tok=++speakTok;const t=speakable(text);let fin=false;
+  opt=opt||{};const tok=++speakTok;let t=speakable(text);let fin=false;
   const done=()=>{if(fin)return;fin=true;if(tok===speakTok&&opt.onend)opt.onend()};
-  if(TTS&&S.sound&&t)setTimeout(done,1500+t.split(" ").length*520);// pengaman kalau browser tidak pernah memanggil onend
-  if(!TTS||!S.sound||!t){const ms=opt.silent===false?0:Math.min(9000,600+t.split(" ").length*230);if(opt.onend)setTimeout(done,opt.silentMs!=null?opt.silentMs:ms);return}
-  try{speechSynthesis.cancel()}catch(e){}
-  const parts=chunks(t);let i=0;
+  if(!TTS||!S.sound||!t){const ms=Math.min(9000,600+t.split(" ").length*230);if(opt.onend)setTimeout(done,opt.silentMs!=null?opt.silentMs:ms);return}
+  if(!VOICES_KNOWN)pickVoice();
+  const neko=nekoReady();
+  let txt=neko?toNeko(t):t;
+  if(neko&&txt.length<160&&!/[？]$/.test(txt))txt=txt.replace(/[。！]?$/,"ニャ！");
+  setTimeout(done,1500+t.split(" ").length*560);// pengaman kalau browser tidak pernah memanggil onend
+  const parts=chunks(txt);let i=0;
   const next=()=>{if(tok!==speakTok)return;if(i>=parts.length){done();return}
-    const u=new SpeechSynthesisUtterance(parts[i++]);u.lang="id-ID";if(VOICE)u.voice=VOICE;u.rate=opt.rate||1.04;u.pitch=opt.pitch||1.12;
-    u.onend=next;u.onerror=()=>{if(tok===speakTok){i=parts.length;done()}};try{speechSynthesis.speak(u)}catch(e){done()}};
-  setTimeout(next,60);
+    const u=new SpeechSynthesisUtterance(parts[i++]);
+    if(neko){u.lang="ja-JP";if(VOICE_JA)u.voice=VOICE_JA;u.rate=opt.rate||1.06;u.pitch=1.45}
+    else{u.lang="id-ID";if(VOICE)u.voice=VOICE;u.rate=opt.rate||1.04;u.pitch=S.voice==="neko"?1.5:1.1}
+    u.onend=next;u.onerror=()=>{if(tok===speakTok){i=parts.length;done()}};
+    try{speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){done()}};
+  let busy=false;try{busy=speechSynthesis.speaking||speechSynthesis.pending}catch(e){}
+  if(busy){try{speechSynthesis.cancel()}catch(e){}setTimeout(next,140)}else next();// langsung bicara di dalam sentuhan (wajib di iOS)
 }
 function hush(){speakTok++;try{if(TTS)speechSynthesis.cancel()}catch(e){}}
 function speaking(){try{return TTS&&speechSynthesis.speaking}catch(e){return false}}
+function testVoice(){unlockAudio();say(S.voice==="neko"?"Halo, aku Tamago. Kalau kamu salah, aku ketawa dulu. Hahaha. Terus kita cek bareng.":"Halo, aku Tamago. Ini suara normal bahasa Indonesia.")}
 
 // ================= VOICE IN (speech recognition) =================
 const SRC=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -1291,6 +1353,10 @@ function startMic(){
   A.lis=listenOnce({maxMs:10000,onpartial:t=>{$("#tama-in").value=t},onerror:c=>{if(!MIC_OK)$("#mic-note").textContent=MIC_WHY},
     onend:txt=>{A.lis=null;$("#mic").classList.remove("on");status("siap ngobrol");$("#tama-in").value="";if(txt)handleInput(txt)}});
 }
+function renderVoiceChips(){document.querySelectorAll("[data-voice]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.voice===S.voice)))}
+document.querySelectorAll("[data-voice]").forEach(b=>b.onclick=()=>{S.voice=b.dataset.voice;save();renderVoiceChips();if(!S.sound){S.sound=true;save();renderSnd()}testVoice()});
+document.querySelectorAll("[data-voicetest]").forEach(b=>b.onclick=()=>{if(!S.sound){S.sound=true;save();renderSnd()}testVoice()});
+renderVoiceChips();
 $("#mic").innerHTML=ic("mic");
 $("#mic").onclick=startMic;
 $("#tama-send").onclick=()=>{const v=$("#tama-in").value;$("#tama-in").value="";handleInput(v)};
@@ -1343,7 +1409,7 @@ function openSeg(segId,prefix,m){const b=document.querySelector(segId+` [data-m=
 (function(){const seg=$("#lat-seg");seg.querySelectorAll("button").forEach(b=>b.onclick=()=>{
   seg.querySelectorAll("button").forEach(x=>{x.setAttribute("aria-pressed",String(x===b));$("#lat-"+x.dataset.m).hidden=x!==b})})})();
 function renderSnd(){const b=$("#snd");b.setAttribute("aria-pressed",String(!!S.sound));b.innerHTML=S.sound?ic("spk"):ic("mute");b.setAttribute("aria-label",S.sound?"Suara nyala":"Suara mati")}
-$("#snd").onclick=()=>{S.sound=!S.sound;save();if(!S.sound)hush();renderSnd()};
+$("#snd").onclick=()=>{S.sound=!S.sound;save();if(!S.sound)hush();else say(S.voice==="neko"?"Suara nyala. Meong.":"Suara nyala.");renderSnd()};
 
 function procChips(el,cur,onPick,metric){
   el.innerHTML=PKEYS.map(k=>{const v=S[metric][k];return `<button class="chip" data-k="${k}" aria-pressed="${k===cur}">${PROCS[k].name}${v!=null?`<small>${v}%</small>`:""}</button>`}).join("");
@@ -1453,7 +1519,7 @@ function renderContekan(){
   <div class="sk alt">${D.depth}</div>
   <div class="sk mint tilt2"><h3>GIC vs resin</h3><ul class="tight"><li>GIC: conditioner → <span class="hl">lembab</span> → glossy → varnish.</li><li>Resin: etsa 37% → <span class="hl m">putih kapur</span> → (bonding) → silen → light cure.</li><li>Saliva setelah etsa → ulang etsa.</li></ul></div>
   <div class="sk"><h3>ART 14 langkah</h3><ul class="tight"><li>Cuci → indikator 10–15 dtk → cuci (beda warna)</li><li>Ekskavator tajam → pahat enamel menggantung → cuci sampai warna hilang</li><li>Conditioner 15 dtk → cuci → lembab</li><li>Aduk 1:1, total 30 dtk, agate → ball applicator</li><li>Celluloid strip + ibu jari → konturing → cocoa butter</li></ul><p class="muted" style="margin-top:8px;font-size:15px">Kontraindikasi: abses/fistula, kena pulpa, pulpitis kronis, sakit lama, tidak terjangkau.</p></div>
-  <div class="sk lav alt"><h3>ICDAS kilat</h3><ul class="tight"><li>1 opak setelah dikeringkan, 2 opak saat basah</li><li>3 enamel pecah, dentin belum terlihat</li><li>4 bayangan dentin</li><li>5–6 dentin terlihat</li></ul></div>
+  <div class="sk lav alt"><h3>ICDAS kilat</h3><ul class="tight"><li>1 opak setelah dikeringkan, 2 opak saat basah</li><li>3 enamel pecah, dentin belum terlihat</li><li>4 bayangan dentin</li><li>5–6 dentin terlihat</li><li><b>Gigi permanen pakai ICDAS. K1–K4 hanya untuk gigi sulung.</b></li></ul></div>
   <div class="sk blue"><h3>Angka</h3><ul class="tight"><li>Kontrol: tinggi 3 bln, sedang 6, rendah 6–12</li><li>M1 erupsi 6–7 th, premolar 10–13, M2 12–14</li><li>Regio 4: operator jam 10, asisten jam 3</li><li>Skor: 2 / 1 / 0 / TB (dengan alasan)</li></ul></div>
   <div class="sk red alt"><h3>Tanyakan dosen sebelum masuk</h3><ul class="tight"><li>PRR A: pakai bonding atau tidak?</li><li>Bur PRR B: no. ½ atau 1–2?</li><li>Liner di PRR C: rutin atau hanya bila ada indikasi?</li><li>Durasi etsa/conditioner → "sesuai pabrik".</li></ul></div>`;
 }
@@ -1472,13 +1538,18 @@ function renderPanduan(){
   <div class="sk mint alt"><h3>Soal suara</h3><ul class="tight">
     <li><b>Suara Tamago</b> (dibacakan) jalan di hampir semua HP, termasuk offline. Kalau tidak ada suara bahasa Indonesia di HP, logatnya bisa aneh.</li>
     <li><b>Mic</b> (Tamago mendengar) jalan di Chrome Android dan Safari iPhone, biasanya butuh internet. Kalau tombol mic tidak jalan, ketuk kolom ketik lalu pakai tombol mic di keyboard HP.</li>
-    <li>Di dalam aplikasi Claude, mic di halaman diblokir. Pakai mic keyboard, atau buka versi app.</li></ul></div>
+    <li>Di dalam aplikasi Claude, mic di halaman diblokir. Pakai mic keyboard, atau buka versi app.</li>
+    <li><b>Suara neko</b>: suara cewek Jepang bawaan HP membaca teks dengan logat Jepang. <b>Suara normal</b>: suara bahasa Indonesia, lebih jelas untuk materi panjang.</li>
+    <li><b>iPhone tidak bunyi?</b> Matikan mode senyap (tombol di samping HP), naikkan volume media, buka lewat Safari atau app di home screen, lalu ketuk "Tes suara".</li></ul>
+    <div class="chips" style="margin-top:10px"><button class="chip" data-voice="neko" aria-pressed="${S.voice==="neko"}">Suara neko</button><button class="chip" data-voice="normal" aria-pressed="${S.voice==="normal"}">Suara normal</button><button class="chip" data-voicetest="1">Tes suara</button></div></div>
   <div class="sk blue"><h3>AI Claude</h3><p style="font-size:15px">${AI?"AI aktif. Tamago menjawab tanya bebas, menilai setoran lisan, dan menjelaskan kesalahan pakai Claude. Ini memakai kuota Claude akunmu sendiri.":"AI hanya aktif kalau app dibuka lewat link Claude oleh orang yang punya akun Claude. Di versi app (GitHub), Tamago tetap jalan memakai mode lokal: menilai dengan kata kunci dan menjawab dari materi."}</p></div>
   <div class="sk alt"><h3>Pasang di HP</h3><ul class="tight">
     <li><b>Android</b>: buka link di Chrome → ⋮ → Install app / Tambahkan ke layar utama.</li>
     <li><b>iPhone</b>: harus Safari, bukan dari dalam WA/IG. Ketuk Share. Di iOS terbaru: ketuk ⋯ → Share → gulir ke bawah → Add to Home Screen. Kalau tidak ada, gulir paling bawah → Edit Actions → tambahkan.</li></ul></div>
   <div class="sk"><h3>Progres</h3><p style="font-size:15px">Tersimpan di HP masing-masing.</p><div class="row" style="margin-top:10px" id="reset-wrap"><button class="btn sm white" id="reset-btn">Reset semua progres</button></div></div>`;
   bindReset();
+  document.querySelectorAll("#p-panduan [data-voice]").forEach(b=>b.onclick=()=>{S.voice=b.dataset.voice;save();renderVoiceChips();if(!S.sound){S.sound=true;save();renderSnd()}testVoice()});
+  document.querySelectorAll("#p-panduan [data-voicetest]").forEach(b=>b.onclick=()=>{if(!S.sound){S.sound=true;save();renderSnd()}testVoice()});
 }
 function bindReset(){
   const w=$("#reset-wrap");if(!w)return;
