@@ -1,6 +1,11 @@
 # Mesin OSCE FKG USU
 
-App belajar OSCE Blok 24 (ART, PFS, PRR) untuk mahasiswa FKG USU. Isinya kartu nalar ("tebak dulu"), latihan susun urutan, lisan 2/1/0, kasus, kuis, dan contekan.
+App belajar OSCE Blok 24 (ART, PFS, PRR) untuk mahasiswa FKG USU, gaya tamagoendogg: ketawa dulu, baru mikir.
+
+- **Main**: satu tombol. Materi, tebakan, dan review kilat bergantian. Jawaban salah diketawain dulu, lalu dicek kenapa salahnya, lalu ditanya lagi nanti.
+- **Rebahan**: semua dibacakan, jawab pakai suara.
+- **Tamago**: agen suara (kuis suara, setor langkah 2/1/0, tanya bebas). Di versi ini Tamago jalan lokal; AI Claude aktif kalau dibuka lewat link Claude.
+- **Latihan** dan **Contekan**.
 
 ## Pasang di HP
 - **iPhone:** buka link di Safari → Share → Add to Home Screen.
