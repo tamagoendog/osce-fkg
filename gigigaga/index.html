@@ -338,7 +338,7 @@ details.mods summary::-webkit-details-marker{display:none}
 @media (prefers-reduced-motion:reduce){.haha,.dot,.mic.on{animation:none}}
 
 /* ===== Belajar KG layout: sidebar di layar lebar, bottom nav di HP ===== */
-html,body{overflow-x:hidden;max-width:100%}
+html,body{overflow-x:clip;max-width:100%}
 body{margin:0}
 body.noscroll{overflow:hidden}
 a{color:inherit}
@@ -355,7 +355,7 @@ a{color:inherit}
 .hero-cat{max-width:150px}
 .view{max-width:1080px;margin:0 auto;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(100px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:grid;gap:20px;min-width:0;outline:none}
 .view>*{min-width:0}
-.botnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:2.5px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.botnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:2.5px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
 .bnav{display:grid;justify-items:center;gap:2px;padding:8px 2px;text-decoration:none;color:var(--muted);font-family:var(--f-hand);font-size:16px;font-weight:700}
 .bnav .i{width:26px;height:26px;padding:3px;box-sizing:content-box;border-radius:var(--wob)}
 .bnav[aria-current="page"]{color:var(--ink)}
@@ -491,6 +491,27 @@ a{color:inherit}
 @media (prefers-reduced-motion:reduce){.dcard,.ccard,.pcard,.act{transition:none}}
 
 .draft.ok2{background:var(--mint-soft)}
+
+/* Tanya Tamago */
+.tq-home{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border:2.4px solid var(--line);border-radius:var(--wob2);background:var(--mint-soft);text-decoration:none;box-shadow:3px 4px 0 var(--line)}
+.tq-home .sticker{padding:4px}.tq-home b{display:block;font-family:var(--f-hand);font-size:23px}
+.chat{display:grid;gap:10px;min-height:160px}
+.msg2{display:grid;gap:3px;max-width:100%}
+.msg2.u{justify-items:end}
+.msg2 .who{font-family:var(--f-hand);font-size:16px;color:var(--green);font-weight:700}
+.msg2 .bub{padding:10px 13px;border:2.2px solid var(--line);border-radius:16px;background:var(--card);max-width:100%;overflow-wrap:anywhere;font-size:15.5px;line-height:1.5}
+.msg2.u .bub{background:var(--yolk);color:#13291F;max-width:85%}
+.msg2 .bub p{margin:0 0 6px}.msg2 .bub ul{margin:2px 0 6px}
+.ans-grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));margin:6px 0}
+.ans-grid>div{padding:8px 10px;border:2px dashed var(--grid);border-radius:12px}
+.ans-snip{padding:6px 0;border-bottom:2px dashed var(--grid)}.ans-snip p{margin:2px 0 0}
+.ans-snip .k,.src .k{font-family:var(--f-hand);font-size:14px;color:var(--green);font-weight:700;margin-right:4px}
+.srcs{display:grid;gap:5px;margin-top:8px}
+.src{display:block;padding:6px 10px;border:1.8px solid var(--line);border-radius:10px;text-decoration:none;font-size:14px;background:var(--paper)}
+.tq-sug{gap:6px}.tq-sug .chip{text-align:left}
+.tq-bar{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:8px;border:2.4px solid var(--line);border-radius:var(--wob2);background:var(--paper);box-shadow:0 -12px 0 var(--paper)}
+.tq-bar input{min-width:0;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);outline:none;padding:8px 6px}
+@media (min-width:960px){.tq-bar{bottom:16px}}
 
 </style>
 </head><body>
@@ -2283,6 +2304,138 @@ const PACKS=[
 ];
 const PACK=Object.fromEntries(PACKS.map(p=>[p.id,p]));
 
+// ================= TANYA TAMAGO: chatbox lintas modul =================
+// Tiga lapis: (1) alat hitung (umur → gigi yang sudah tumbuh, dosis anestesi), (2) pencarian lokal di semua konten
+// dengan link ke modul/materi asalnya, (3) bila dibuka lewat Claude, AI menyusun jawaban HANYA dari potongan yang ditemukan.
+
+// ---- Jadwal erupsi (perkiraan, ADA/AAPD). [nama, FDI atas, FDI bawah, erupsi atas, erupsi bawah, tanggal atas, tanggal bawah]
+// Gigi sulung: erupsi dalam bulan, tanggal dalam tahun. Gigi permanen: erupsi dalam tahun.
+const ER_SULUNG=[
+ ["Insisif sentral",["51","61"],["71","81"],[8,12],[6,10],[6,7],[6,7]],
+ ["Insisif lateral",["52","62"],["72","82"],[9,13],[10,16],[7,8],[7,8]],
+ ["Kaninus",["53","63"],["73","83"],[16,22],[17,23],[10,12],[9,12]],
+ ["Molar pertama",["54","64"],["74","84"],[13,19],[14,18],[9,11],[9,11]],
+ ["Molar kedua",["55","65"],["75","85"],[25,33],[23,31],[10,12],[10,12]]];
+const ER_PERM=[
+ ["Insisif sentral",["11","21"],["31","41"],[7,8],[6,7]],
+ ["Insisif lateral",["12","22"],["32","42"],[8,9],[7,8]],
+ ["Kaninus",["13","23"],["33","43"],[11,12],[9,10]],
+ ["Premolar pertama",["14","24"],["34","44"],[10,11],[10,12]],
+ ["Premolar kedua",["15","25"],["35","45"],[10,12],[11,12]],
+ ["Molar pertama",["16","26"],["36","46"],[6,7],[6,7]],
+ ["Molar kedua",["17","27"],["37","47"],[12,13],[11,13]],
+ ["Molar ketiga",["18","28"],["38","48"],[17,21],[17,21]]];
+function parseAge(q){const t=q.toLowerCase().replace(",",".");
+  let m=t.match(/(\d+(?:\.\d+)?)\s*(tahun|thn|th\b|tahunan)/);if(m)return {mo:Math.round(+m[1]*12),lbl:m[1]+" tahun"};
+  m=t.match(/(\d+(?:\.\d+)?)\s*(bulan|bln|bl\b)/);if(m)return {mo:Math.round(+m[1]),lbl:m[1]+" bulan"};
+  m=t.match(/(?:umur|usia)\s*(\d+(?:\.\d+)?)/);if(m){const v=+m[1];return v>24?{mo:v,lbl:v+" bulan"}:{mo:Math.round(v*12),lbl:v+" tahun"}}
+  return null}
+function eruptionAnswer(age){const mo=age.mo,yr=mo/12,out={sulungAda:[],sulungTumbuh:[],sulungGoyang:[],sulungLepas:[],permAda:[],permTumbuh:[]};
+  const fmt=(nama,teeth)=>`${nama} (${teeth.join(", ")})`;
+  ER_SULUNG.forEach(([n,up,lo,eu,el,tu,tl])=>{[["atas",up,eu,tu],["bawah",lo,el,tl]].forEach(([jaw,teeth,er,sh])=>{const lbl=fmt(n+" "+jaw,teeth);
+    if(yr>=sh[1])out.sulungLepas.push(lbl);else if(yr>=sh[0])out.sulungGoyang.push(lbl);else if(mo>=er[1])out.sulungAda.push(lbl);else if(mo>=er[0])out.sulungTumbuh.push(lbl)})});
+  ER_PERM.forEach(([n,up,lo,eu,el])=>{[["atas",up,eu],["bawah",lo,el]].forEach(([jaw,teeth,er])=>{const lbl=fmt(n+" "+jaw,teeth);
+    if(yr>=er[1])out.permAda.push(lbl);else if(yr>=er[0])out.permTumbuh.push(lbl)})});
+  const li=a=>a.length?`<ul class="tight">${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:'<p class="muted small">—</p>';
+  const fase=mo<6?"Belum ada gigi yang biasanya erupsi (gigi pertama sekitar 6 bulan).":mo<36&&!out.permAda.length?"Fase gigi sulung.":out.permAda.length||out.permTumbuh.length?(out.sulungAda.length||out.sulungGoyang.length?"Fase gigi bercampur (mixed dentition).":"Fase gigi permanen."):"Fase gigi sulung.";
+  return `<p><b>Usia ${esc(age.lbl)}</b>: ${fase}</p>
+  <div class="ans-grid">
+   <div><b class="hand">Gigi sulung sudah ada</b>${li(out.sulungAda)}</div>
+   <div><b class="hand">Gigi sulung sedang tumbuh</b>${li(out.sulungTumbuh)}</div>
+   <div><b class="hand">Gigi sulung mungkin goyang/tanggal</b>${li(out.sulungGoyang)}</div>
+   <div><b class="hand">Gigi permanen sudah ada</b>${li(out.permAda)}</div>
+   <div><b class="hand">Gigi permanen sedang tumbuh</b>${li(out.permTumbuh)}</div>
+  </div>
+  <p class="muted small">Rentang rata-rata (ADA/AAPD); variasi beberapa bulan masih normal. Urutan lebih penting daripada angka. Lihat <a href="#/m/ik-erupsi?p=ik-erupsi">materi erupsi</a>.</p>`}
+// ---- Dosis anestesi lokal (pedoman AAPD, sama dipakai di paket IKGA/BM)
+const LA=[["lidokain",/lido|xylo|pehacain/,4.4,300,36,"2% 1,8 mL"],["artikain",/arti|septa|pehacain|ubistesin/,7,500,72,"4% 1,8 mL"],["mepivakain",/mepi|scandon/,4.4,300,54,"3% 1,8 mL"],["prilokain",/prilo|citanest/,8,600,72,"4% 1,8 mL"]];
+function doseAnswer(q){const t=q.toLowerCase();const w=t.match(/(\d+(?:[.,]\d+)?)\s*(kg|kilo)/);if(!w)return null;const kg=+w[1].replace(",",".");
+  let list=LA.filter(d=>d[1].test(t));if(!list.length)list=LA;
+  return `<p><b>Berat ${kg} kg</b>: batas maksimal (bukan target).</p>`+tbl(["Obat","mg/kg","Maks mg","Karpul (sediaan)"],list.map(([n,,mgkg,max,perCarp,sed])=>{const mg=Math.min(kg*mgkg,max);return [n,String(mgkg).replace(".",","),Math.round(mg)+" mg",(mg/perCarp).toFixed(1).replace(".",",")+" karpul "+sed]}))+
+  `<p class="muted small">Pedoman AAPD (anak). Untuk dewasa, sumber berbeda memberi batas lidokain 4,4–7 mg/kg; pakai yang konservatif. Lihat <a href="#/m/ik-anestesi?p=ik-anestesi">materi anestesi anak</a> dan <a href="#/m/bm-anestesi?p=bm-anestesi">anestesi rongga mulut</a>.</p>`}
+
+// ---- Pencarian lokal (BM25 sederhana)
+let TQ=null;
+const STOP=new Set("yang dan di ke dari untuk pada dengan atau ini itu apa apakah adalah kalau jika saja aja kan sih nya juga bisa tidak nggak gak ga akan sudah udah belum masih lebih paling sangat agar supaya karena jadi oleh dalam seperti per bagaimana gimana kenapa mengapa kapan berapa mana siapa ada sebuah suatu para the of a an is are to in harus perlu boleh tolong dong mau".split(" "));
+const SYN={susu:"sulung",umur:"usia",goyang:"mobilitas",cabut:"pencabutan",ekstraksi:"pencabutan",bius:"anestesi",tambal:"restorasi",tambalan:"restorasi",bengkak:"abses",gusi:"gingiva",saraf:"pulpa"};
+function toks(s){return norm(s).replace(/[^a-z0-9.%]+/g," ").split(/\s+/).filter(w=>w.length>1&&!STOP.has(w)).map(w=>SYN[w]||w)}
+function packOfMod(mid){return PACKS.find(p=>p.mods.includes(mid))}
+function packOfMat(id){return PACKS.find(p=>p.mat.includes(id))}
+function buildTQ(){const docs=[];const add=(title,text,href,kind)=>{const tx=stripTags(text);docs.push({title,text:tx,href,kind,tk:toks(title+" "+title+" "+tx)})};
+  PACKS.forEach(p=>p.mods.forEach(mid=>{const m=MOD_BY[mid];if(!m)return;m.cards.forEach(c=>{
+    if(c.k==="c")add(m.t+" · "+stripTags(c.t),c.b,`#/b/${p.id}/${mid}`,"Modul");
+    else if(c.k==="ch")add(m.t+" · "+stripTags(c.t),c.s.join(". "),`#/b/${p.id}/${mid}`,"Modul");
+    else if(c.k==="g")add(m.t+" · tebakan",c.q+" Jawaban: "+c.o[0]+". "+c.y,`#/b/${p.id}/${mid}`,"Modul")})}));
+  const seenM=new Set();PACKS.forEach(p=>p.mat.forEach(id=>{if(seenM.has(id))return;seenM.add(id);const c=MAT_BY[id];if(!c)return;
+    add(c.t+" · intinya",c.tldr.join(". "),`#/m/${id}?p=${p.id}`,"Materi");
+    let html="";try{html=c.body()}catch(e){}
+    html.split(/<section/).forEach(sec=>{const h=(sec.match(/<h3>(.*?)<\/h3>/)||[])[1];if(h)add(c.t+" · "+stripTags(h),sec,`#/m/${id}?p=${p.id}`,"Materi")})}));
+  const seenQ=new Set();PACKS.forEach(p=>QUIZ_ALL.filter(q=>p.quiz.includes(q[1])).forEach(q=>{if(seenQ.has(q[0]))return;seenQ.add(q[0]);add("Kuis "+q[1],q[2]+" Jawaban: "+q[3][0]+". "+q[4],`#/q/${p.id}`,"Kuis")}));
+  const seenP=new Set();PACKS.forEach(p=>p.procs.forEach(k=>{if(seenP.has(k)||!PROCS[k])return;seenP.add(k);const P=PROCS[k];add("Urutan "+P.name,P.steps.map((s,i)=>(i+1)+". "+s[0]+": "+s[1]+" ("+s[2]+")").join(" "),`#/u/${p.id}/${k}`,"Prosedur")}));
+  PACKS.forEach(p=>p.traps.forEach(i=>{const t=TRAPS_ALL[i];if(t)add("Jebakan",t[0]+" "+(t[1]?"Boleh.":"Tidak.")+" "+t[2],`#/t/${p.id}`,"Jebakan")}));
+  SK.forEach(s=>add("Keterampilan: "+s.t,DISC_BY[s.d].t+". Tingkat "+s.lv+": "+LEVEL[s.lv],"#/s/"+s.id,"Kurikulum"));
+  CD.forEach(c=>add("Penyakit "+c.c+": "+c.t,c.ex,"#/c/"+c.c,"Kurikulum"));
+  KOMP.forEach(k=>add("Kompetensi "+k.n+" "+k.t,k.kd.map(x=>x.join(" ")).join(". "),"#/k/"+k.n,"Kurikulum"));
+  const df={};docs.forEach(d=>new Set(d.tk).forEach(w=>df[w]=(df[w]||0)+1));
+  const avg=docs.reduce((a,d)=>a+d.tk.length,0)/docs.length;
+  TQ={docs,df,avg,N:docs.length}}
+function retrieve(q,k){if(!TQ)buildTQ();const qt=[...new Set(toks(q))];if(!qt.length)return[];
+  const res=TQ.docs.map(d=>{let s=0;const tf={};d.tk.forEach(w=>tf[w]=(tf[w]||0)+1);
+    qt.forEach(w=>{const f=tf[w]||Object.keys(tf).filter(x=>x.length>4&&w.length>4&&(x.startsWith(w)||w.startsWith(x))).reduce((a,x)=>a+tf[x]*0.6,0);if(!f)return;
+      const idf=Math.log(1+(TQ.N-(TQ.df[w]||1)+0.5)/((TQ.df[w]||1)+0.5));s+=idf*(f*2.2)/(f+1.2*(0.25+0.75*d.tk.length/TQ.avg))});
+    return [s,d]}).filter(x=>x[0]>0).sort((a,b)=>b[0]-a[0]);
+  const out=[],seen=new Set();for(const [s,d] of res){const key=d.href+d.title;if(seen.has(key))continue;seen.add(key);out.push(Object.assign({score:s},d));if(out.length>=(k||5))break}
+  return out}
+function bestSentences(d,q,n){const qt=new Set(toks(q));const ss=d.text.split(/(?<=[.!?])\s+/).filter(s=>s.length>15);
+  return ss.map((s,i)=>[toks(s).filter(w=>qt.has(w)).length,i,s]).sort((a,b)=>b[0]-a[0]||a[1]-b[1]).slice(0,n||2).sort((a,b)=>a[1]-b[1]).map(x=>x[2]).join(" ")}
+
+// ---- AI (hanya bila dibuka lewat Claude dengan kemampuan sample)
+let TQ_AI=undefined;
+function tqAI(){if(TQ_AI!==undefined)return Promise.resolve(TQ_AI);
+  try{if(window.claude&&window.claude.use)return window.claude.use("sample").then(s=>{TQ_AI=s||null;return TQ_AI}).catch(()=>{TQ_AI=null;return null})}catch(e){}
+  TQ_AI=null;return Promise.resolve(null)}
+
+// ---- UI
+const TQ_LOG=[];
+const TQ_SUGGEST=["Umur 7 tahun, gigi apa saja yang sudah tumbuh?","Anak 18 kg, dosis maksimal lidokain?","Kapan pulpotomi, kapan pulpektomi?","Abses gigi, kapan perlu antibiotik?","Kenapa GIC harus lembab?","Pasien warfarin mau cabut gigi, gimana?"];
+function pgTanya(){
+  V.innerHTML=`<div class="phead"><h1 class="h1">Tanya Tamago</h1><p class="muted">Tanya apa saja dari semua paket. Jawaban diambil dari materi yang ada di app, lengkap dengan link ke sumbernya.</p></div>
+  <div class="chat" id="tq-log" aria-live="polite"></div>
+  <div class="chips tq-sug" id="tq-sug">${TQ_SUGGEST.map(s=>`<button class="chip sm" data-q="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+  <form class="tq-bar" id="tq-form"><input id="tq-in" type="text" placeholder="Misal: umur 9 tahun gigi apa yang goyang?" autocomplete="off" enterkeyhint="send"><button class="btn sm" type="submit">Kirim</button></form>
+  <p class="muted small" id="tq-mode"></p>`;
+  const log=$("#tq-log");
+  if(!TQ_LOG.length)TQ_LOG.push({who:"t",html:`Halo, aku Tamago. Tanya pakai bahasa sehari-hari aja. Aku cari di semua modul, lalu kasih jawaban dan link ke bagian aslinya, jadi kamu bisa cek sendiri nalarnya.`});
+  TQ_LOG.forEach(m=>log.insertAdjacentHTML("beforeend",msgHTML(m)));
+  log.scrollTop=log.scrollHeight;
+  tqAI().then(ai=>{const el=$("#tq-mode");if(el)el.textContent=ai?"Mode AI aktif: Claude menyusun jawaban hanya dari potongan materi yang ditemukan.":"Mode lokal: jawaban dari pencarian materi (AI aktif bila dibuka lewat Claude)."});
+  $("#tq-form").onsubmit=e=>{e.preventDefault();const v=$("#tq-in").value.trim();if(!v)return;$("#tq-in").value="";ask(v)};
+  $("#tq-sug").querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>ask(b.dataset.q));
+}
+function msgHTML(m){return `<div class="msg2 ${m.who==="u"?"u":"t"}">${m.who==="t"?`<span class="who">Tamago</span>`:""}<div class="bub">${m.html}</div></div>`}
+function pushMsg(m){TQ_LOG.push(m);const log=$("#tq-log");if(!log)return null;log.insertAdjacentHTML("beforeend",msgHTML(m));const el=log.lastElementChild;el.scrollIntoView({behavior:reduce?"auto":"smooth",block:"end"});return el}
+function srcList(hits){return hits.length?`<div class="srcs"><b class="hand">Baca lengkapnya</b>${hits.map(h=>`<a class="src" href="${h.href}"><span class="k">${esc(h.kind)}</span>${esc(h.title)}</a>`).join("")}</div>`:""}
+async function ask(q){
+  pushMsg({who:"u",html:esc(q)});
+  const tools=[];const age=/usia|umur|tahun|bulan|thn|bln/i.test(q)&&/gigi|tumbuh|erupsi|goyang|tanggal|copot|keluar/i.test(q)?parseAge(q):null;
+  if(age)tools.push(eruptionAnswer(age));
+  const dose=/kg|kilo/i.test(q)&&/dosis|anestesi|lido|arti|mepi|prilo|karpul|bius/i.test(q)?doseAnswer(q):null;
+  if(dose)tools.push(dose);
+  const hits=retrieve(q,6);
+  if(tools.length){pushMsg({who:"t",html:tools.join("")+srcList(hits.slice(0,3))});return}
+  const ai=await tqAI();
+  if(!hits.length){pushMsg({who:"t",html:`Hmm, aku belum nemu itu di materi yang ada. Coba kata kunci lain (misalnya nama tindakan atau penyakitnya). Kalau topiknya memang belum ada, tandai di halaman topiknya dengan tombol <b>Aku butuh topik ini</b>.`});return}
+  if(ai){const el=pushMsg({who:"t",html:`<span class="muted">mikir dulu…</span>`});const bub=el&&el.querySelector(".bub");
+    const ctx=hits.map((h,i)=>`[${i+1}] ${h.title}\n${h.text.slice(0,900)}`).join("\n\n");
+    const prompt=`Kamu Tamago, tutor kedokteran gigi untuk mahasiswa FKG di app GigiGaga. Jawab pertanyaan HANYA berdasarkan potongan materi di bawah. Kalau potongan tidak cukup, katakan bagian mana yang belum ada; jangan menambah fakta dari luar. Bahasa Indonesia santai tapi tepat, langsung ke inti, jelaskan mekanismenya (kenapa), maksimal 150 kata, tanpa heading. Sebut nomor potongan yang dipakai dalam kurung siku, misalnya [2].\n\nPOTONGAN MATERI:\n${ctx}\n\nPERTANYAAN: ${q}`;
+    try{const r=await ai(prompt,{onText:({text})=>{if(bub)bub.innerHTML=esc(text).replace(/\n/g,"<br>")}});
+      const txt=(r&&r.text)||"";if(bub)bub.innerHTML=esc(txt).replace(/\[(\d)\]/g,(m,n)=>hits[n-1]?`<a href="${hits[n-1].href}">[${n}]</a>`:m).replace(/\n/g,"<br>")+srcList(hits.slice(0,4));TQ_LOG[TQ_LOG.length-1].html=bub?bub.innerHTML:txt;return}
+    catch(e){if(bub)bub.innerHTML=localAnswer(q,hits);TQ_LOG[TQ_LOG.length-1].html=localAnswer(q,hits);return}}
+  pushMsg({who:"t",html:localAnswer(q,hits)});
+}
+function localAnswer(q,hits){const top=hits.slice(0,3);
+  return `${top.map((h,i)=>`<div class="ans-snip"><span class="k">${esc(h.kind)}</span> <b>${esc(h.title)}</b><p>${esc(bestSentences(h,q,2)||h.text.slice(0,220))}</p></div>`).join("")}`+srcList(hits.slice(0,4))}
+
 // ================= TAMAGO KG: app =================
 const KEY="tkg-v1";
 const S=(()=>{let v={};try{v=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){}
@@ -2295,7 +2448,7 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
 const ICONS={home:'<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',map:'<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/>',rep:'<path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
  search:'<circle cx="11" cy="11" r="6"/><path d="M16 16l5 5"/>',book:'<path d="M12 6c-3-2-6-2-8-1v14c2-1 5-1 8 1 3-2 6-2 8-1V5c-2-1-5-1-8 1zM12 6v14"/>',play:'<path d="M8 5l12 7-12 7z"/>',spk:'<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 9a4 4 0 0 1 0 6"/>',
- lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',back:'<path d="M15 5l-7 7 7 7"/>',chev:'<path d="M9 5l7 7-7 7"/>',list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>'};
+ lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',back:'<path d="M15 5l-7 7 7 7"/>',chev:'<path d="M9 5l7 7-7 7"/>',list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',chat:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/>'};
 const ic=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||""}</svg>`;
 function catImg(name,cls){return `<div class="sticker ${cls||""}"><img class="cat" src="${IMG[name]||IMG["kucing-duduk"]}" alt="" draggable="false"></div>`}
 function sparks(){if(reduce)return;const box=document.createElement("div");box.className="sparks";const marks=["✦","✶","☆","♥","✿","!"],cols=["var(--yolk)","var(--green)","var(--pink)","var(--lav)","var(--blue)"];
@@ -2345,7 +2498,7 @@ function markRight(k){S.right[k]={t:Date.now()};save()}
 const LV=lv=>`<span class="lv lv${lv}" title="${esc(LEVEL[lv])}">L${lv}</span>`;
 
 // ================= LAYOUT =================
-const NAV=[["home","Beranda","#/"],["map","Jelajah","#/jelajah"],["rep","Review","#/review"],["user","Profil","#/profil"]];
+const NAV=[["home","Beranda","#/"],["map","Jelajah","#/jelajah"],["chat","Tanya","#/tanya"],["rep","Review","#/review"],["user","Profil","#/profil"]];
 function navHTML(cls){return NAV.map(([i,t,h])=>`<a class="${cls}" href="${h}" data-nav="${h}">${ic(i)}<span>${t}</span></a>`).join("")}
 $("#side-nav").innerHTML=navHTML("snav");$("#bot-nav").innerHTML=navHTML("bnav");
 function setNav(h){const root="#/"+(h.split("/")[1]||"");document.querySelectorAll("[data-nav]").forEach(a=>{const on=a.dataset.nav===root||(root==="#/"&&a.dataset.nav==="#/")||(["#/d","#/s","#/c","#/k","#/p","#/m"].includes(root)&&a.dataset.nav==="#/jelajah");a.setAttribute("aria-current",on?"page":"false")})}
@@ -2363,6 +2516,7 @@ function pgHome(){
     <p>Disusun mengikuti <b>Standar Kompetensi Dokter Gigi Indonesia</b>. Pilih disiplin, keterampilan, atau penyakit. Salah boleh, malah diketawain dulu.</p>
     <div class="row">${last?`<a class="btn" href="${last.h}">${ic("play")} Lanjut: ${esc(last.t)}</a>`:`<a class="btn" href="#/jelajah">${ic("map")} Mulai jelajah</a>`}<a class="btn white" href="#/review">${ic("rep")} Review ${due?`<b class="pill">${due}</b>`:""}</a></div></div>
     <div class="hero-cat">${catImg("telur-kucing-tidur","t1")}</div></section>
+  <a class="tq-home" href="#/tanya">${catImg("kucing-ngecek","t2")}<span><b>Tanya Tamago</b><span class="muted small">Misal: \"umur 7 tahun gigi apa saja yang sudah tumbuh?\" Jawaban dari semua paket, dengan link ke sumbernya.</span></span>${ic("chev")}</a>
   <div class="search-big"><label class="sbox">${ic("search")}<input id="q-home" type="search" placeholder="Cari: pulpotomi, ICDAS, gingivitis, 13.1.4…" autocomplete="off"></label><div id="q-home-res" class="sres"></div></div>
   ${started.length?`<section><h2 class="h2">Lagi dipelajari</h2><div class="grid">${started.map(packCard).join("")}</div></section>`:""}
   <section><div class="row"><h2 class="h2">Disiplin</h2><span class="spacer"></span><a class="lnk" href="#/jelajah">Semua cara jelajah ›</a></div><div class="grid g-disc">${DISC.map(discCard).join("")}</div></section>
@@ -2584,7 +2738,7 @@ function route(){hush();const h=location.hash||"#/";const [path,qs]=h.slice(1).s
    case "p":pgPack(a[1]);break;case "m":pgMateri(a[1],q.get("p"));break;
    case "b":if(PACK[a[1]])pgPack(a[1]);openPlayer(a[1],a[2]);break;
    case "q":pgQuiz(a[1]);break;case "u":pgUrutan(a[1],a[2]);break;case "t":pgTraps(a[1]);break;case "x":pgCases(a[1],a[2]);break;
-   case "review":pgReview();break;case "r":pgQuiz(null,"review");break;case "profil":pgProfil();break;
+   case "tanya":pgTanya();break;case "review":pgReview();break;case "r":pgQuiz(null,"review");break;case "profil":pgProfil();break;
    default:pg404()}
   const t=document.querySelector("#view h1");document.title=(t&&a[0]?t.textContent.trim()+" · ":"")+"GigiGaga";
 }
